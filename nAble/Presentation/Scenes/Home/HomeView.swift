@@ -7,10 +7,12 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class HomeView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .red
+        print("chavitvirte")
         // Do any additional setup after loading the view.
     }
 
