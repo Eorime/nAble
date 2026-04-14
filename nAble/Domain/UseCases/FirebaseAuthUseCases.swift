@@ -10,7 +10,7 @@ import FirebaseFirestore
 import FirebaseCore
 //TODO: google sign in usecase da repo
 
-class FirebaseAuthRepository: AuthRepository {
+class FirebaseAuthUseCases: AuthRepository {
     private let db = Firestore.firestore()
     
     func login(email: String, password: String, completion: @escaping (Result<User, any Error>) -> Void) {
