@@ -6,3 +6,7 @@
 //
 
 //es rasac userebi daamateben w images
+
+struct UserLocationModel {
+    
+}

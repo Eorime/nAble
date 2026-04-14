@@ -20,8 +20,8 @@ sign up
 
 protocol AuthRepository {
     func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
-    func logout(completion: @escaping (Result<User, Error>) -> Void)
+    func logout(completion: @escaping (Result<Void, Error>) -> Void)
     func signUp(email: String, password: String, username: String, fullName: String, completion: @escaping(Result<User, Error>) -> Void)
     func changePassword(currentPassword: String?, newPassword: String?, completion: @escaping (Result<User, Error>) -> Void)
-    func deleteAccount(password: String?, completion: @escaping (Result<User, Error>) -> Void) //will probably need a presenting controller parameter too
+    func deleteAccount(password: String?, completion: @escaping (Result<Void, Error>) -> Void) //will probably need a presenting controller parameter too
 }
