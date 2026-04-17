@@ -19,3 +19,4 @@ class HomeView: UIViewController {
 
 }
 
+//thisll be a view not a vc
