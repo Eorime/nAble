@@ -1,22 +1,13 @@
-//
-//  LogInView.swift
-//  nAble
-//
-//  Created by Eorime on 17.04.26.
-//
-
-//
-//  LogInView.swift
-//  nAble
-//
-//  Created by Eorime on 17.04.26.
-//
-
 import UIKit
 
 class LogInViewController: UIViewController {
     var viewmodel: LoginViewModel
     weak var coordinator: AuthCoordinator?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "AppBG")
+    }
     
     init(viewmodel: LoginViewModel) {
         self.viewmodel = viewmodel

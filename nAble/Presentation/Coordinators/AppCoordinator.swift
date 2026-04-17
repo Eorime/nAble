@@ -25,6 +25,7 @@ class AppCoordinator {
     private func checkAuthAndShowScreen() {
         if Auth.auth().currentUser != nil {
             showMainApp()
+            print("current user: \(Auth.auth().currentUser?.uid ?? "nil")")
         } else {
             showAuth()
         }
