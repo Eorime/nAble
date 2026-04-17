@@ -42,7 +42,7 @@ class AppCoordinator {
                     switch result {
                     case .success(let user):
                         self.createMainCoordinator(with: user)
-                    case .failure(let error):
+                    case .failure(_):
                         print("Failed to fetch user, appcoordinator")
                         self.createMainCoordinator(with: nil)
                     }
@@ -61,7 +61,7 @@ class AppCoordinator {
     }
     
     func showOnboarding() {
-        var onboardingVM = OnboardingVM()
+        let onboardingVM = OnboardingVM()
         let onboardingVC = OnboardingVC(viewmodel: onboardingVM)
         onboardingVC.coordinator = self
         window.rootViewController = onboardingVC

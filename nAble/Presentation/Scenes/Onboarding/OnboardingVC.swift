@@ -10,6 +10,7 @@ class OnboardingVC: UIViewController {
     
     init(viewmodel: OnboardingVM) {
         self.viewmodel = viewmodel
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {

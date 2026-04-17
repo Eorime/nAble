@@ -7,7 +7,7 @@ protocol MainCoordinatorDelegate: AnyObject {
 
 class MainCoordinator: NSObject, UINavigationControllerDelegate {
     private let window: UIWindow
-    private let tabBarController: UITabBarController?
+    private var tabBarController: UITabBarController?
     private let currentUser: User?
     weak var delegate: MainCoordinatorDelegate?
     

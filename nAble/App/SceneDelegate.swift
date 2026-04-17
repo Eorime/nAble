@@ -8,18 +8,19 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
+    var appCoordinator: AppCoordinator?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(windowScene: scene)
+        // es falsze shecvale
+        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+        let window = UIWindow(windowScene: scene)
+        self.window = window
         
-        //droebit nav controller iyos
-        let navigation = UINavigationController(rootViewController: HomeView())
-        window?.rootViewController = navigation
-        window?.makeKeyAndVisible()
+        appCoordinator = AppCoordinator(window: window)
+        appCoordinator?.start()
     }
 
 }

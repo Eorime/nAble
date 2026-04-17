@@ -55,7 +55,7 @@ class FirebaseAuthRepository: AuthRepository {
     }
     
     func changePassword(currentPassword: String?, newPassword: String?, completion: @escaping (Result<User, any Error>) -> Void) {
-        <#code#>
+        print("daamate")
     }
     
     func deleteAccount(password: String?, completion: @escaping (Result<Void, any Error>) -> Void) {

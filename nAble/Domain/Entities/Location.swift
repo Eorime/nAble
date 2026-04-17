@@ -2,6 +2,6 @@
 //  Location.swift
 //  nAble
 //
-//  Created by Eorime on 14.04.26.
+//  Created by Eorime on 17.04.26.
 //
 

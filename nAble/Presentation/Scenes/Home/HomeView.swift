@@ -11,9 +11,8 @@ class HomeView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
+        view.backgroundColor = UIColor(named: "AppBG")
         print("chavitvirte")
-        // Do any additional setup after loading the view.
     }
 
 
