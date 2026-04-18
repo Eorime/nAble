@@ -21,7 +21,7 @@ class AuthCoordinator {
     }
     
     func showLogin() {
-        let viewModel = LoginViewModel()
+        let viewModel = LoginViewModel(authRepo: authRepository)
         let loginVC = LogInViewController(viewmodel: viewModel)
         loginVC.coordinator = self
         let navController = UINavigationController(rootViewController: loginVC)

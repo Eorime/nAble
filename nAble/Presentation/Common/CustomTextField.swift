@@ -92,7 +92,7 @@ class CustomTextField: UIView {
         ])
             
         registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, previousTraitCollection) in
-            self.textField.layer.borderColor = UIColor(named: "AppRed")?.cgColor
+            self.textField.layer.borderColor = UIColor(named: "AppGray")?.cgColor
         }
     }
     
