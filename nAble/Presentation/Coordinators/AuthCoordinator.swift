@@ -25,6 +25,7 @@ class AuthCoordinator {
         let loginVC = LogInViewController(viewmodel: viewModel)
         loginVC.coordinator = self
         let navController = UINavigationController(rootViewController: loginVC)
+        navController.setNavigationBarHidden(true, animated: false)
         window.rootViewController = navController
         window.makeKeyAndVisible()
     }

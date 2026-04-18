@@ -78,7 +78,7 @@ class CustomPasswordField: UIView {
        private func configurePlaceholder() {
            let attributes: [NSAttributedString.Key: Any] = [
                .font: UIFont(name: "FiraGO-Regular", size: 14)!,
-               .foregroundColor: UIColor(named: "AppGray")!
+               .foregroundColor: UIColor(named: "AppGray")!.withAlphaComponent(0.6)
            ]
            textField.attributedPlaceholder = NSAttributedString(string: placeholderString, attributes: attributes)
        }
@@ -89,6 +89,8 @@ class CustomPasswordField: UIView {
            addSubview(lockIcon)
            addSubview(toggleButton)
            addSubview(errorLabel)
+           
+           textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
                
            NSLayoutConstraint.activate([
                label.topAnchor.constraint(equalTo: topAnchor),
@@ -130,11 +132,16 @@ class CustomPasswordField: UIView {
         if let message = message {
             errorLabel.text = message
             errorLabel.isHidden = false
+            textField.layer.borderColor = UIColor(named: "AppRed")?.cgColor
         } else {
             errorLabel.text = nil
             errorLabel.isHidden = true
             textField.layer.borderColor = UIColor(named: "AppGray")?.cgColor
         }
+    }
+    
+    @objc private func textDidChange() {
+        showError(nil)
     }
     
     @objc private func togglePasswordVisibility() {

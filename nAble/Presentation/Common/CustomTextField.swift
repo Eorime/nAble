@@ -62,7 +62,7 @@ class CustomTextField: UIView {
     private func configurePlaceholder() {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont(name: "FiraGO-Regular", size: 14)!,
-            .foregroundColor: UIColor(named: "AppGray")!
+            .foregroundColor: UIColor(named: "AppGray")!.withAlphaComponent(0.6)
         ]
         textField.attributedPlaceholder = NSAttributedString(string: placeholderString, attributes: attributes)
     }
@@ -74,6 +74,7 @@ class CustomTextField: UIView {
         
         errorLabelHeightConstraint = errorLabel.heightAnchor.constraint(equalToConstant: 0)
         errorLabelHeightConstraint?.isActive = true
+        textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
             
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor),
@@ -96,16 +97,21 @@ class CustomTextField: UIView {
         }
     }
     
+    @objc private func textDidChange() {
+        showError(nil)
+    }
+    
     func showError(_ message: String?) {
         if let message = message {
             errorLabel.text = message
             errorLabel.isHidden = false
             errorLabelHeightConstraint?.isActive = false
+            textField.layer.borderColor = UIColor(named: "AppRed")?.cgColor
         } else {
             errorLabel.text = nil
             errorLabel.isHidden = true
             errorLabelHeightConstraint?.isActive = true
-            textField.layer.borderColor = UIColor(named: "AppRed")?.cgColor
+            textField.layer.borderColor = UIColor(named: "AppGray")?.cgColor
         }
     }
 }

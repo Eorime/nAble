@@ -12,7 +12,7 @@ struct HomeView: View {
         Text("Home")
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color("AppGreen"))
+                    .background(Color("AppBG"))
     }
 }
 

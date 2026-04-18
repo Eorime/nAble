@@ -56,8 +56,8 @@ class LoaderManager {
     func hide() {
         imageView?.layer.removeAllAnimations()
         loaderView?.removeFromSuperview()
-        loaderView = nil
-        loaderView?.isHidden = true
+        loaderWindow?.isHidden = true
+        loaderWindow = nil
         loaderView = nil
         imageView = nil
     }

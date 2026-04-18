@@ -17,16 +17,23 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
     }
     
     func start() {
+        UINavigationBar.appearance().isHidden = true
         let tabBar = UITabBarController()
         
         let appearance = UITabBarAppearance()
-        appearance.configureWithDefaultBackground()
-        appearance.backgroundColor = UIColor(named: "AppGreen")
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
         
         appearance.shadowColor = nil
         appearance.shadowImage = nil
         
-        tabBar.tabBar.standardAppearance = appearance  
+        let itemAppearance = UITabBarItemAppearance()
+        itemAppearance.selected.iconColor = UIColor(named: "AppGreen")
+        itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(named: "AppGreen")!]
+        itemAppearance.normal.iconColor = UIColor(named: "AppGreen")?.withAlphaComponent(0.5)
+        appearance.stackedLayoutAppearance = itemAppearance
+        
+        tabBar.tabBar.standardAppearance = appearance
         tabBar.tabBar.scrollEdgeAppearance = appearance
         
         let locationsView = LocationsView()
@@ -44,7 +51,7 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         tabBar.selectedIndex = 1
         tabBar.viewControllers = [locationsVC, homeVC, profileVC]
         
-        window.rootViewController = tabBarController
+        window.rootViewController = tabBar
         window.makeKeyAndVisible()
     }
 }
