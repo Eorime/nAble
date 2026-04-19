@@ -31,7 +31,7 @@ class AuthCoordinator {
     }
     
     func showSignUp() {
-        let viewModel = SignUpViewModel()
+        let viewModel = SignUpViewModel(authRepository: authRepository)
         let signupVC = SignUpViewController(viewmodel: viewModel)
         signupVC.coordinator = self
         let navController = UINavigationController(rootViewController: signupVC)

@@ -147,5 +147,83 @@ class SignUpViewController: UIViewController {
           ])
       }
     
+    private func showError(_ message: String) {
+        if message.contains("full name") || message.contains("Full name") {
+            fullNameField.showError(message)
+        } else if message.contains("username") || message.contains("Username") {
+            usernameField.showError(message)
+        } else if message.contains("email") || message.contains("Email") {
+            emailField.showError(message)
+        } else if message.contains("match") || message.contains("Confirm") {
+            confirmPasswordField.showError(message)
+        } else if message.contains("Password") || message.contains("password") ||
+            message.contains("uppercase") || message.contains("number") ||
+            message.contains("character") {
+               passwordField.showError(message)
+        } else {
+               passwordField.showError(message)
+           }
+       }
     
+    private func clearAllErrors() {
+        fullNameField.showError(nil)
+        usernameField.showError(nil)
+        emailField.showError(nil)
+        passwordField.showError(nil)
+        confirmPasswordField.showError(nil)
+    }
+    
+    func setUpBindings() {
+        viewmodel.onSignUpSuccess = { [weak self] in
+            self?.coordinator?.signupDidSucceed()
+        }
+        
+        viewmodel.onSignUpError = { [weak self] errorMessage in
+            self?.showError(errorMessage)
+        }
+    }
+    
+    func setUpActions() {
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+    }
+    
+    @objc private func backTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func signUpTapped() {
+        clearAllErrors()
+        
+        guard let fullName = fullNameField.textField.text, !fullName.isEmpty else {
+            fullNameField.showError("Full name is required")
+            return
+        }
+                
+        guard let username = usernameField.textField.text, !username.isEmpty else {
+            usernameField.showError("Username is required")
+            return
+        }
+                
+        guard let email = emailField.textField.text, !email.isEmpty else {
+            emailField.showError("Email is required")
+            return
+        }
+                
+        guard let password = passwordField.textField.text, !password.isEmpty else {
+            passwordField.showError("Password is required")
+            return
+        }
+                
+        guard let confirmPassword = confirmPasswordField.textField.text, !confirmPassword.isEmpty else {
+            confirmPasswordField.showError("Please confirm your password")
+            return
+        }
+                
+        guard password == confirmPassword else {
+            confirmPasswordField.showError("Passwords don't match")
+            return
+        }
+            
+        viewmodel.signUp(email: email, password: password, fullName: fullName, username: username)
+    }
 }
