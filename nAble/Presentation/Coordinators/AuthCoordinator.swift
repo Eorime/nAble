@@ -35,6 +35,7 @@ class AuthCoordinator {
         let signupVC = SignUpViewController(viewmodel: viewModel)
         signupVC.coordinator = self
         let navController = UINavigationController(rootViewController: signupVC)
+        navController.setNavigationBarHidden(true, animated: false)
         window.rootViewController = navController
         window.makeKeyAndVisible()
     }

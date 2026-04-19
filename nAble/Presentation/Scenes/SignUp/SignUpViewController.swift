@@ -19,4 +19,8 @@ class SignUpViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError()
     }
+    
+    override func viewDidLoad() {
+        view.backgroundColor = UIColor(named: "AppBG")
+    }
 }

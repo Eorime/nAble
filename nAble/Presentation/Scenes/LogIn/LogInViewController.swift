@@ -122,6 +122,9 @@ class LogInViewController: UIViewController {
     func setupButtonActions() {
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         skipButton.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
+        bottomText.onSignUpTapped = {[weak self] in
+            self?.coordinator?.showSignUp()
+        }
     }
     
     @objc func loginTapped() {

@@ -13,6 +13,8 @@
 		FA2927842F8D54C3008FE8CA /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = FA2927832F8D54C3008FE8CA /* FirebaseRemoteConfig */; };
 		FA2927862F8D54C3008FE8CA /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = FA2927852F8D54C3008FE8CA /* FirebaseStorage */; };
 		FA2927882F8D54C3008FE8CA /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = FA2927872F8D54C3008FE8CA /* FirebaseStorageCombine-Community */; };
+		FA2927EC2F9512B7008FE8CA /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = FA2927EB2F9512B7008FE8CA /* GooglePlaces */; };
+		FA2927EE2F9512B7008FE8CA /* GooglePlacesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = FA2927ED2F9512B7008FE8CA /* GooglePlacesSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +49,8 @@
 			files = (
 				FA2927802F8D54C3008FE8CA /* FirebaseCore in Frameworks */,
 				FA29277E2F8D54C3008FE8CA /* FirebaseAuth in Frameworks */,
+				FA2927EC2F9512B7008FE8CA /* GooglePlaces in Frameworks */,
+				FA2927EE2F9512B7008FE8CA /* GooglePlacesSwift in Frameworks */,
 				FA2927822F8D54C3008FE8CA /* FirebaseFirestore in Frameworks */,
 				FA2927862F8D54C3008FE8CA /* FirebaseStorage in Frameworks */,
 				FA2927882F8D54C3008FE8CA /* FirebaseStorageCombine-Community in Frameworks */,
@@ -99,6 +103,8 @@
 				FA2927832F8D54C3008FE8CA /* FirebaseRemoteConfig */,
 				FA2927852F8D54C3008FE8CA /* FirebaseStorage */,
 				FA2927872F8D54C3008FE8CA /* FirebaseStorageCombine-Community */,
+				FA2927EB2F9512B7008FE8CA /* GooglePlaces */,
+				FA2927ED2F9512B7008FE8CA /* GooglePlacesSwift */,
 			);
 			productName = nAble;
 			productReference = FA2927542F82D137008FE8CA /* nAble.app */;
@@ -130,6 +136,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				FA29277C2F8D54C3008FE8CA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				FA2927EA2F9512B7008FE8CA /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FA2927552F82D137008FE8CA /* Products */;
@@ -375,6 +382,14 @@
 				minimumVersion = 12.12.0;
 			};
 		};
+		FA2927EA2F9512B7008FE8CA /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.12.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -407,6 +422,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA29277C2F8D54C3008FE8CA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		FA2927EB2F9512B7008FE8CA /* GooglePlaces */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA2927EA2F9512B7008FE8CA /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlaces;
+		};
+		FA2927ED2F9512B7008FE8CA /* GooglePlacesSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA2927EA2F9512B7008FE8CA /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlacesSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

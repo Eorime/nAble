@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription
+</key>
+	<string>nAble uses your location to find accessible places nearby</string>
+	<key>GooglePlacesAPIKey</key>
+	<string>AIzaSyDX6jmQYBNlSyrNT7C-n5M7zCUKto3te7M</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>firago-latin-300-normal.ttf</string>
