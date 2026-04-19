@@ -78,7 +78,7 @@ class SignUpViewController: UIViewController {
     private let signUpButton: CustomButton = {
         let button = CustomButton(
             title: "Sign Up",
-            backgroundColor: UIColor(named: "AppButtonRed"),
+            backgroundColor: UIColor(named: "AppGreen"),
             cornerRadius: 8
         )
         return button
@@ -97,6 +97,9 @@ class SignUpViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "AppBG")
         navigationController?.setNavigationBarHidden(true, animated: false)
+        setupUI()
+        setUpActions()
+        setUpBindings()
     }
     
     //MARK: Methods
