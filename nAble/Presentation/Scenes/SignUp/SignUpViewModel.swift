@@ -42,6 +42,7 @@ class SignUpViewModel {
             case .success:
                 self?.onSignUpSuccess?()
             case .failure(let error):
+                print("Sign up error: \(error)")
                 self?.onSignUpError?(error.localizedDescription)
             }
         }

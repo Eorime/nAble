@@ -188,6 +188,7 @@ class SignUpViewController: UIViewController {
     
     func setUpActions() {
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
     }
     
     @objc private func backTapped() {

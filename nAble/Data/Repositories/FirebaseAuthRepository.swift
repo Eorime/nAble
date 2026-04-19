@@ -51,6 +51,15 @@ class FirebaseAuthRepository: AuthRepository {
             }
             
             let user = User(id: firebaseUser.uid, fullName: fullName, userName: username, email: email, userLocations: [], imageUrl: "")
+            
+            self?.saveUser(user: user) { result in
+                switch result {
+                case .success:
+                    completion(.success(user))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
         }
     }
     
