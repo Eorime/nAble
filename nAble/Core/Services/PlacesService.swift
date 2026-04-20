@@ -1,7 +1,7 @@
-//
-//  PlacesService.swift
-//  nAble
-//
-//  Created by Eorime on 19.04.26.
-//
+import UIKit
 
+class PlacesService {
+    static let shared = PlacesService()
+    
+    private init() {}
+}
