@@ -5,6 +5,7 @@ struct NearbySearchResponseDTO: Codable {
 }
 
 struct PlaceDTO: Codable {
+    let id: String?
     let rating: Double?
     let displayName: LocalizedTextDTO?
     let reviews: [ReviewDTO]?

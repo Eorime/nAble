@@ -1,6 +1,7 @@
 import UIKit
 
 struct Place {
+    let id: String
     let name: String
     let address: String
     let rating: Double

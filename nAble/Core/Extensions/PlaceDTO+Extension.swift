@@ -1,6 +1,9 @@
+import UIKit
+
 extension PlaceDTO {
     func toEntity() -> Place {
         Place(
+            id: id ?? UUID().uuidString,
             name: displayName?.text ?? "Unknown",
             address: formattedAddress ?? "No address",
             rating: rating ?? 0.0,
