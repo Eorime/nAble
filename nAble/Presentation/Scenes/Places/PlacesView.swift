@@ -17,7 +17,10 @@ struct PlacesView: View {
         }
         .background(Color("AppBG"))
         .onAppear {
-            viewModel.loadNearbyPlaces()
+            viewModel.startLocationMonitoring()
+        }
+        .onDisappear {
+            viewModel.stopLocationMonitoring()
         }
         .onChange(of: viewModel.isLoading) { isLoading in
             if isLoading {

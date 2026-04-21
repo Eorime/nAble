@@ -18,6 +18,7 @@ class LocationService: NSObject, LocationServiceProtocol {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.distanceFilter = 50
     }
     
     func requestLocationPermission() {

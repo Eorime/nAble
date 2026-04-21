@@ -50,8 +50,8 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         tabBar.tabBar.standardAppearance = appearance
         tabBar.tabBar.scrollEdgeAppearance = appearance
         
-        let getCurrentLocation = GetCurrentLocationUseCase(locationService: locationService)
-        let placesVM = PlacesViewModel(getCurrentLocation: getCurrentLocation)
+//        let getCurrentLocation = GetCurrentLocationUseCase(locationService: locationService)
+        let placesVM = PlacesViewModel(locationService: locationService)
         self.placesViewModel = placesVM
         let placesView = PlacesView(viewModel: placesVM)
         let placesVC = UIHostingController(rootView: placesView)

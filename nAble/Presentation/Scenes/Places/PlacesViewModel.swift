@@ -9,51 +9,56 @@ class PlacesViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var error: Error?
     
-    private let getCurrentLocation: GetCurrentLocationUseCaseProtocol
+    private let locationService: LocationServiceProtocol
     private let fetchNearbyPlaces: FetchNearbyPlacesUseCase
     private let savePlaceUseCase: SavePlaceUseCase
     private let removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
     private let fetchSavedPlacesUseCase: FetchSavedPlacesUseCase
     
     init(
-        getCurrentLocation: GetCurrentLocationUseCaseProtocol,
+        locationService: LocationServiceProtocol = LocationService(),
         fetchNearbyPlaces: FetchNearbyPlacesUseCase = FetchNearbyPlacesUseCase(),
         savePlaceUseCase: SavePlaceUseCase = SavePlaceUseCase(),
         removeSavedPlaceUseCase: RemoveSavedPlaceUseCase = RemoveSavedPlaceUseCase(),
         fetchSavedPlacesUseCase: FetchSavedPlacesUseCase = FetchSavedPlacesUseCase()
     ) {
-        self.getCurrentLocation = getCurrentLocation
+        self.locationService = locationService
         self.fetchNearbyPlaces = fetchNearbyPlaces
         self.savePlaceUseCase = savePlaceUseCase
         self.removeSavedPlaceUseCase = removeSavedPlaceUseCase
         self.fetchSavedPlacesUseCase = fetchSavedPlacesUseCase
     }
     
-    func loadNearbyPlaces() {
+    func startLocationMonitoring() {
+        locationService.startMonitoringLocation { [weak self] coordinate in
+            DispatchQueue.main.async {
+                self?.loadNearbyPlaces(coordinate: coordinate)
+            }
+        }
+    }
+
+    func stopLocationMonitoring() {
+        locationService.stopMonitoringLocation()
+    }
+    
+    private func loadNearbyPlaces(coordinate: CLLocationCoordinate2D) {
         isLoading = true
-        getCurrentLocation.execute { [weak self] result in
-            switch result {
-            case .success(let coordinate):
-                Task {
-                    do {
-                        let places = try await self?.fetchNearbyPlaces.execute(
-                            latitude: coordinate.latitude,
-                            longitude: coordinate.longitude
-                        )
-                        await MainActor.run {
-                            self?.places = places ?? []
-                            self?.isLoading = false
-                        }
-                    } catch {
-                        print("Places error: \(error)")
-                        await MainActor.run {
-                            self?.error = error
-                            self?.isLoading = false
-                        }
-                    }
+        Task {
+            do {
+                let places = try await fetchNearbyPlaces.execute(
+                    latitude: coordinate.latitude,
+                    longitude: coordinate.longitude
+                )
+                await MainActor.run {
+                    self.places = places
+                    self.isLoading = false
                 }
-            case .failure(let error):
-                print("Location error: \(error)")
+            } catch {
+                print("Places error: \(error)")
+                await MainActor.run {
+                    self.error = error
+                    self.isLoading = false
+                }
             }
         }
     }
