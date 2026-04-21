@@ -17,6 +17,7 @@ struct PlacesView: View {
         }
         .background(Color("AppBG"))
         .onAppear {
+            viewModel.loadInitialPlaces() 
             viewModel.startLocationMonitoring()
         }
         .onDisappear {

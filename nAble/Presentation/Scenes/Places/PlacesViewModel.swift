@@ -101,4 +101,17 @@ class PlacesViewModel: ObservableObject {
             }
         }
     }
+    
+    func loadInitialPlaces() {
+        locationService.getCurrentLocation { [weak self] result in
+                switch result {
+                case .success(let coordinate):
+                    DispatchQueue.main.async {
+                        self?.loadNearbyPlaces(coordinate: coordinate)
+                    }
+                case .failure(let error):
+                    print("Location error: \(error)")
+                }
+            }
+    }
 }
