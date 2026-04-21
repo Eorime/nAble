@@ -1,44 +1,60 @@
-import UIKit
-import _LocationEssentials
+import Foundation
+import Combine
+internal import _LocationEssentials
 
-class PlacesViewModel {
+class PlacesViewModel: ObservableObject {
+    //MARK: Properties
+    @Published var places: [Place] = []
+    @Published var savedPlaces: [Place] = []
+    @Published var isLoading: Bool = false
+    @Published var error: Error?
+    
     private let getCurrentLocation: GetCurrentLocationUseCaseProtocol
-    private let fetchPlacesUseCase: FetchNearbyPlacesUseCase
+    private let fetchNearbyPlaces: FetchNearbyPlacesUseCase
     private let savePlaceUseCase: SavePlaceUseCase
     private let removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
     private let fetchSavedPlacesUseCase: FetchSavedPlacesUseCase
-
-    var onPlacesLoaded: (([Place]) -> Void)?
-    var onSavedPlacesLoaded: (([Place]) -> Void)?
-    var onError: ((Error) -> Void)?
     
-    init(getCurrentLocation: GetCurrentLocationUseCaseProtocol, fetchPlacesUseCase: FetchNearbyPlacesUseCase, savePlaceUseCase: SavePlaceUseCase, removeSavedPlaceUseCase: RemoveSavedPlaceUseCase, fetchSavedPlacesUseCase: FetchSavedPlacesUseCase) {
+    init(
+        getCurrentLocation: GetCurrentLocationUseCaseProtocol,
+        fetchNearbyPlaces: FetchNearbyPlacesUseCase = FetchNearbyPlacesUseCase(),
+        savePlaceUseCase: SavePlaceUseCase = SavePlaceUseCase(),
+        removeSavedPlaceUseCase: RemoveSavedPlaceUseCase = RemoveSavedPlaceUseCase(),
+        fetchSavedPlacesUseCase: FetchSavedPlacesUseCase = FetchSavedPlacesUseCase()
+    ) {
         self.getCurrentLocation = getCurrentLocation
-        self.fetchPlacesUseCase = fetchPlacesUseCase
+        self.fetchNearbyPlaces = fetchNearbyPlaces
         self.savePlaceUseCase = savePlaceUseCase
         self.removeSavedPlaceUseCase = removeSavedPlaceUseCase
         self.fetchSavedPlacesUseCase = fetchSavedPlacesUseCase
     }
     
     func loadNearbyPlaces() {
+        isLoading = true
         getCurrentLocation.execute { [weak self] result in
             switch result {
             case .success(let coordinate):
                 Task {
                     do {
-                        let places = try await self?.fetchPlacesUseCase.execute(latitude: coordinate.latitude, longitude: coordinate.longitude)
-                        DispatchQueue.main.async {
-                            self?.onPlacesLoaded?(places ?? [])
+                        let places = try await self?.fetchNearbyPlaces.execute(
+                            latitude: coordinate.latitude,
+                            longitude: coordinate.longitude
+                        )
+                        await MainActor.run {
+                            self?.places = places ?? []
+                            self?.isLoading = false
                         }
-                        } catch {
-                            DispatchQueue.main.async {
-                                self?.onError?(error)
-                            }
+                    } catch {
+                        await MainActor.run {
+                            self?.error = error
+                            self?.isLoading = false
                         }
                     }
+                }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.onError?(error)
+                    self?.error = error
+                    self?.isLoading = false
                 }
             }
         }
@@ -49,8 +65,8 @@ class PlacesViewModel {
             do {
                 try await savePlaceUseCase.execute(userId: userId, place: place)
             } catch {
-                DispatchQueue.main.async {
-                    self.onError?(error)
+                await MainActor.run {
+                    self.error = error
                 }
             }
         }
@@ -61,8 +77,8 @@ class PlacesViewModel {
             do {
                 try await removeSavedPlaceUseCase.execute(userId: userId, placeId: placeId)
             } catch {
-                DispatchQueue.main.async {
-                    self.onError?(error)
+                await MainActor.run {
+                    self.error = error
                 }
             }
         }
@@ -72,15 +88,14 @@ class PlacesViewModel {
         Task {
             do {
                 let places = try await fetchSavedPlacesUseCase.execute(userId: userId)
-                DispatchQueue.main.async {
-                    self.onSavedPlacesLoaded?(places)
+                await MainActor.run {
+                    self.savedPlaces = places
                 }
             } catch {
-                DispatchQueue.main.async {
-                    self.onError?(error)
+                await MainActor.run {
+                    self.error = error
                 }
             }
         }
     }
-    
 }
