@@ -19,6 +19,7 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
     func start() {
         UINavigationBar.appearance().isHidden = true
         let tabBar = UITabBarController()
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
         
         let appearance = UITabBarAppearance()
         appearance.configureWithTransparentBackground()
@@ -36,20 +37,20 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         tabBar.tabBar.standardAppearance = appearance
         tabBar.tabBar.scrollEdgeAppearance = appearance
         
-        let locationsView = LocationsView()
-        let locationsVC = UIHostingController(rootView: locationsView)
-        locationsVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location"), tag: 0)
+        let placesView = PlacesView()
+        let placesVC = UIHostingController(rootView: placesView)
+        placesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location", withConfiguration: symbolConfig), tag: 0)
         
         let homeView = HomeView()
         let homeVC = UIHostingController(rootView: homeView)
-        homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map"), tag: 1)
+        homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map", withConfiguration: symbolConfig), tag: 1)
         
         let profileView = ProfileView()
         let profileVC = UIHostingController(rootView: profileView)
-        profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person"), tag: 2)
+        profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person", withConfiguration: symbolConfig), tag: 2)
         
         tabBar.selectedIndex = 1
-        tabBar.viewControllers = [locationsVC, homeVC, profileVC]
+        tabBar.viewControllers = [placesVC, homeVC, profileVC]
         
         window.rootViewController = tabBar
         window.makeKeyAndVisible()

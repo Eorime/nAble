@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LocationsView: View {
+struct PlacesView: View {
     var body: some View {
             Text("Locations")
                         .foregroundColor(.white)
