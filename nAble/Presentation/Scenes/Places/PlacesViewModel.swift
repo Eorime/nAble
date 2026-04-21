@@ -45,6 +45,7 @@ class PlacesViewModel: ObservableObject {
                             self?.isLoading = false
                         }
                     } catch {
+                        print("Places error: \(error)")
                         await MainActor.run {
                             self?.error = error
                             self?.isLoading = false
@@ -52,10 +53,7 @@ class PlacesViewModel: ObservableObject {
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    self?.error = error
-                    self?.isLoading = false
-                }
+                print("Location error: \(error)")
             }
         }
     }

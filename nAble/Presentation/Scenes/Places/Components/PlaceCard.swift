@@ -7,7 +7,7 @@ struct PlaceCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: place.photos.first?.reference ?? "")) { image in
+            AsyncImage(url: PlacesService.shared.getPhotoURL(photoName: place.photos.first?.reference ?? "")) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -21,8 +21,8 @@ struct PlaceCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(place.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                        .font(.custom("FiraGO-Regular", size: 18))
+                        .foregroundColor(Color("AppBlack"))
                         .lineLimit(1)
                     
                     Spacer()
@@ -32,13 +32,13 @@ struct PlaceCard: View {
                         onSave(place)
                     } label: {
                         Image(systemName: isSaved ? "heart.fill" : "heart")
-                            .foregroundColor(isSaved ? .red : .gray) //change 
+                            .foregroundColor(isSaved ? Color("AppRed") : Color("AppGray") )
                     }
                 }
                 
                 Text(place.address)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.custom("FiraGO-Regular", size: 14))
+                    .foregroundColor(Color("AppGray").opacity(0.5))
                     .lineLimit(2)
                 
                 HStack(spacing: 4) {
@@ -65,11 +65,10 @@ struct PlaceCard: View {
                     }
                 }
             }
-            .padding(12)
+            .padding(10)
         }
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
+        .background(Color("AppWhite"))
+        .cornerRadius(8)
     }
 }
 

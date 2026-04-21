@@ -26,7 +26,7 @@ class PlacesService {
         request.setValue(fieldMask, forHTTPHeaderField: "X-Goog-FieldMask")
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
         
         do {
             return try JSONDecoder().decode(T.self, from: data)
@@ -47,5 +47,11 @@ class PlacesService {
         } catch {
             throw NetworkError.decodingError
         }
+    }
+    
+    func getPhotoURL(photoName: String, maxWidth: Int = 400) -> URL? {
+        guard !photoName.isEmpty else { return nil }
+        let urlString = "https://places.googleapis.com/v1/\(photoName)/media?maxWidthPx=\(maxWidth)&key=\(apiKey)"
+        return URL(string: urlString)
     }
 }

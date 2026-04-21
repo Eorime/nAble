@@ -1,20 +1,30 @@
 import SwiftUI
 
 struct PlacesView: View {
-    @StateObject var viewModel: PlacesViewModel
-    
+    @ObservedObject var viewModel: PlacesViewModel
+
     var body: some View {
         ScrollView {
-            LazyVStack {
-                ForEach(places, id: \.id) { place in
-                    PlaceCard(place: place, onSave: onSave)
+            LazyVStack(spacing: 16) {
+                ForEach(viewModel.places, id: \.id) { place in
+                    PlaceCard(place: place, onSave: { place in
+                        viewModel.savePlace(userId: "CURRENT_USER_ID", place: place)
+                    })
+                    .padding(.horizontal, 16)
                 }
             }
-            .padding(.vertical, 8)
+            .padding(.vertical, 16)
         }
-//        .backgroundColor
+        .background(Color("AppBG"))
         .onAppear {
-            v
+            viewModel.loadNearbyPlaces()
+        }
+        .onChange(of: viewModel.isLoading) { isLoading in
+            if isLoading {
+                LoaderManager.shared.show()
+            } else {
+                LoaderManager.shared.hide()
+            }
         }
     }
 }

@@ -11,11 +11,13 @@ class LocationService: NSObject, LocationServiceProtocol {
     private let locationManager = CLLocationManager()
     private var locationCompletion: ((Result<CLLocationCoordinate2D, Error>) -> Void)?
     private var continuousCallback: ((CLLocationCoordinate2D) -> Void)?
+    private var locationUnknownRetryCount = 0
+    private let maxLocationUnknownRetries = 5
     
     override init() {
         super.init()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
     
     func requestLocationPermission() {
@@ -25,8 +27,14 @@ class LocationService: NSObject, LocationServiceProtocol {
     func getCurrentLocation(completion: @escaping (Result<CLLocationCoordinate2D, Error>) -> Void) {
         self.locationCompletion = completion
         
-        let status = locationManager.authorizationStatus
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) { [weak self] in
+            guard let self, self.locationCompletion != nil else { return }
+            self.locationCompletion?(.failure(LocationError.locationUnavailable))
+            self.locationCompletion = nil
+            self.locationManager.stopUpdatingLocation()
+        }
         
+        let status = locationManager.authorizationStatus
         switch status {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
@@ -54,6 +62,7 @@ extension LocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         
+        locationUnknownRetryCount = 0
         let coordinate = location.coordinate
         
         locationCompletion?(.success(coordinate))
@@ -66,7 +75,13 @@ extension LocationService: CLLocationManagerDelegate {
         if let clError = error as? CLError {
             switch clError.code {
             case .locationUnknown:
-                print("location unknown yet, waiting")
+                locationUnknownRetryCount += 1
+                if locationUnknownRetryCount >= maxLocationUnknownRetries {
+                    locationUnknownRetryCount = 0
+                    locationCompletion?(.failure(LocationError.locationUnavailable))
+                    locationCompletion = nil
+                    manager.stopUpdatingLocation()
+                }
                 return
             case .denied:
                 locationCompletion?(.failure(LocationError.permissionDenied))
@@ -75,15 +90,17 @@ extension LocationService: CLLocationManagerDelegate {
                 locationCompletion?(.failure(error))
                 locationCompletion = nil
             }
+            locationUnknownRetryCount = 0
         }
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
+        guard locationCompletion != nil else { return }
         
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             locationManager.requestLocation()
-        }  else if status == .denied || status == .restricted {
+        } else if status == .denied || status == .restricted {
             locationCompletion?(.failure(LocationError.permissionDenied))
             locationCompletion = nil
         }

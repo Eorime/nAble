@@ -5,10 +5,24 @@ protocol MainCoordinatorDelegate: AnyObject {
     func mainCoordinatorDidLogout(_ coordinator: MainCoordinator)
 }
 
+class CustomTabBarController: UITabBarController {
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        var frame = tabBar.frame
+        frame.size.height = 90
+        frame.origin.y = view.frame.size.height - 90
+        tabBar.frame = frame
+    }
+}
+
 class MainCoordinator: NSObject, UINavigationControllerDelegate {
     private let window: UIWindow
     private var tabBarController: UITabBarController?
     private let currentUser: User?
+    
+    private let locationService = LocationService()
+    private var placesViewModel: PlacesViewModel?
+    
     weak var delegate: MainCoordinatorDelegate?
     
     init(window: UIWindow, currentUser: User?) {
@@ -18,12 +32,11 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
     
     func start() {
         UINavigationBar.appearance().isHidden = true
-        let tabBar = UITabBarController()
+        let tabBar = CustomTabBarController()
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 21, weight: .medium)
         
         let appearance = UITabBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .clear
+        appearance.backgroundColor = UIColor(named: "AppBG")
         
         appearance.shadowColor = nil
         appearance.shadowImage = nil
@@ -37,7 +50,10 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         tabBar.tabBar.standardAppearance = appearance
         tabBar.tabBar.scrollEdgeAppearance = appearance
         
-        let placesView = PlacesView()
+        let getCurrentLocation = GetCurrentLocationUseCase(locationService: locationService)
+        let placesVM = PlacesViewModel(getCurrentLocation: getCurrentLocation)
+        self.placesViewModel = placesVM
+        let placesView = PlacesView(viewModel: placesVM)
         let placesVC = UIHostingController(rootView: placesView)
         placesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location", withConfiguration: symbolConfig), tag: 0)
         
@@ -49,11 +65,10 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         let profileVC = UIHostingController(rootView: profileView)
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person", withConfiguration: symbolConfig), tag: 2)
         
-        tabBar.selectedIndex = 1
         tabBar.viewControllers = [placesVC, homeVC, profileVC]
+        tabBar.selectedIndex = 1
         
         window.rootViewController = tabBar
         window.makeKeyAndVisible()
     }
 }
-

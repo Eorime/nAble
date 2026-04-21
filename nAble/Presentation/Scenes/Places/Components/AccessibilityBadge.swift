@@ -1,3 +1,5 @@
+import SwiftUI
+
 struct AccessibilityBadge: View {
     let icon: String
     let label: String
@@ -5,14 +7,12 @@ struct AccessibilityBadge: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: icon)
-                .font(.caption2)
+                .font(.system(size: 14))
             Text(label)
-                .font(.caption2)
+                .font(.custom("FiraGO-Regular", size: 11))
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Color.green.opacity(0.15))
-        .foregroundColor(.green)
-        .cornerRadius(8)
+        .foregroundColor(Color("AppGreen"))
     }
 }
