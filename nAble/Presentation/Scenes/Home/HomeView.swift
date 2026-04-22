@@ -29,6 +29,13 @@ struct HomeView: View {
                 await viewModel.loadLocations()
             }
         }
+        .onChange(of: viewModel.isLoading) { isLoading in
+            if isLoading {
+                LoaderManager.shared.show()
+            } else {
+                LoaderManager.shared.hide()
+            }
+        }
         .animation(.easeInOut, value: viewModel.isAddingLocation)
         .animation(.easeInOut, value: viewModel.currentStep)
     }

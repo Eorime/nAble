@@ -100,6 +100,7 @@ class SignUpViewController: UIViewController {
         setupUI()
         setUpActions()
         setUpBindings()
+        hideKeyboardOnTap()
     }
     
     //MARK: Methods
