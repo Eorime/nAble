@@ -34,7 +34,7 @@ class AppCoordinator {
     func showMainApp() {
         if let firebaseUser = Auth.auth().currentUser {
             guard let firebaseAuthRepo = authRepo as? FirebaseAuthRepository else {
-                createMainCoordinator(with: nil)
+                self.showAuth()
                 return
             }
             
@@ -45,7 +45,7 @@ class AppCoordinator {
                         self.createMainCoordinator(with: user)
                     case .failure(_):
                         print("Failed to fetch user, appcoordinator")
-                        self.createMainCoordinator(with: nil)
+                        self.showAuth()
                     }
                 }
             }

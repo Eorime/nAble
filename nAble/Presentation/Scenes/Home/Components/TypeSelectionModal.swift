@@ -2,42 +2,124 @@ import SwiftUI
 
 struct TypeSelectionModal: View {
     @ObservedObject var viewModel: HomeViewModel
+    @State private var selectedCategory: Category? = nil
     
-    let types = [
-        ("toilet", "Accessible Restroom"),
-        ("car", "Accessible Parking"),
-        ("chair", "Accessible Seating")
+    enum Category {
+        case accessibility, problem
+    }
+    
+    let accessibilityTypes = [
+        ("friendly", "Friendly"),
+        ("friendlyParking", "Friendly Parking"),
+        ("friendlyWC", "Friendly WC")
+    ]
+    
+    let problemTypes = [
+        ("mildElevation", "Mild Elevation"),
+        ("mildRoad", "Mild Road"),
+        ("railedStairs", "Railed Stairs"),
+        ("roughElevation", "Rough Elevation"),
+        ("roughRoad", "Rough Road"),
+        ("stairs", "Stairs")
     ]
     
     var body: some View {
-        VStack(spacing: 8) {
-            Text("What type of accessibility?")
+        VStack(spacing: 12) {
+            if selectedCategory == nil {
+                categorySelection
+            } else {
+                typeSelection
+            }
+        }
+        .padding(16)
+        .background(Color("AppBG"))
+        .cornerRadius(10)
+        .frame(maxWidth: 340)
+    }
+    
+    private var categorySelection: some View {
+        VStack(spacing: 12) {
+            Text("What are you marking?")
                 .font(.custom("FiraGO-SemiBold", size: 14))
                 .foregroundColor(Color("AppGreen"))
             
             HStack(spacing: 14) {
+                categoryButton(title: "Accessibility", color: Color("AppGreen")) {
+                    selectedCategory = .accessibility
+                }
+                categoryButton(title: "Problem", color: Color.orange) {
+                    selectedCategory = .problem
+                }
+            }
+        }
+    }
+    
+    private var typeSelection: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Button {
+                    selectedCategory = nil
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(headerColor)
+                }
+                Spacer()
+                Text(selectedCategory == .accessibility ? "Accessibility" : "Problem")
+                    .font(.custom("FiraGO-SemiBold", size: 14))
+                    .foregroundColor(headerColor)
+                Spacer()
+            }
+            
+            let types = selectedCategory == .accessibility ? accessibilityTypes : problemTypes
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                 ForEach(types, id: \.0) { type in
                     Button {
-                        viewModel.selectType(type.1)
+                        viewModel.selectType(type.0)
                     } label: {
                         VStack(spacing: 6) {
-                            Image(systemName: type.0)
-                                .font(.system(size: 18))
-                                .foregroundColor(Color("AppGreen"))
+                            Image(type.0)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24)
                             Text(type.1)
                                 .font(.custom("FiraGO-Regular", size: 10))
-                                .foregroundColor(Color("AppGreen"))
+                                .foregroundColor(colorForType(type.0))
                                 .multilineTextAlignment(.center)
                         }
                         .padding(10)
+                        .frame(maxWidth: .infinity)
+                        .background(colorForType(type.0).opacity(0.1))
+                        .cornerRadius(8)
                     }
                 }
             }
         }
-        .padding(10)
-        .padding(.top, 10)
-        .background(Color("AppBG"))
-        .cornerRadius(10)
-        .frame(maxWidth: 340)
+    }
+    
+    private func categoryButton(title: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.custom("FiraGO-SemiBold", size: 13))
+                .foregroundColor(color)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(color.opacity(0.1))
+                .cornerRadius(8)
+        }
+    }
+    
+    private var headerColor: Color {
+        selectedCategory == .problem ? Color.orange : Color("AppGreen")
+    }
+    
+    private func colorForType(_ typeId: String) -> Color {
+        switch typeId {
+        case "roughRoad", "roughElevation", "stairs":
+            return Color("AppRed")
+        case "mildElevation", "mildRoad", "railedStairs":
+            return Color.orange
+        default:
+            return Color("AppGreen")
+        }
     }
 }

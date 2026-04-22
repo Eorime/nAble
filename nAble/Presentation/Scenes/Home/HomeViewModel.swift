@@ -57,6 +57,10 @@ class HomeViewModel: ObservableObject {
             case .success(let coordinate):
                 DispatchQueue.main.async {
                     self?.userLocation = coordinate
+                    self?.cameraPosition = .region(MKCoordinateRegion(
+                        center: coordinate,
+                        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    ))
                 }
             case .failure(let error):
                 DispatchQueue.main.async {

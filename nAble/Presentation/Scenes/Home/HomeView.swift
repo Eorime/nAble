@@ -41,9 +41,11 @@ struct HomeView: View {
                         latitude: location.latitude,
                         longitude: location.longitude
                     )) {
-                        Image(systemName: "mappin.circle.fill")
-                            .foregroundColor(.green)
-                            .font(.title)
+                        Image(location.locationId)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 32, height: 32)
+                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                     }
                     .tag(location)
                 }
