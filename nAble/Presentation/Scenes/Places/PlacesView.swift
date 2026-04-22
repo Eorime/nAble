@@ -5,6 +5,7 @@ struct PlacesView: View {
 
     var body: some View {
         ScrollView {
+            PlacesHeader()
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.places, id: \.id) { place in
                     PlaceCard(place: place, onSave: { place in
