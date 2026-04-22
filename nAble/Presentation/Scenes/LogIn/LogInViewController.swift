@@ -58,6 +58,7 @@ class LogInViewController: UIViewController {
         setupUI()
         setupBindings()
         setupButtonActions()
+        hideKeyboardOnTap()
     }
     
     init(viewmodel: LoginViewModel) {
