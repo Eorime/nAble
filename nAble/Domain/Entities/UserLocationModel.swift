@@ -1,12 +1,27 @@
-//
-//  UserLocationModel.swift
-//  nAble
-//
-//  Created by Eorime on 14.04.26.
-//
+import UIKit
+import CoreLocation
 
-//es rasac userebi daamateben w images
-
-struct UserLocationModel {
+struct UserLocationModel: Identifiable, Codable, Hashable {
+    var id: String
+    let latitude: Double
+    let longitude: Double
+    let locationId: String
+    let userId: String
+    let username: String
+    let timeStamp: Date
+    //image
     
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case latitude
+        case longitude
+        case locationId
+        case userId
+        case username
+        case timeStamp
+    }
 }
