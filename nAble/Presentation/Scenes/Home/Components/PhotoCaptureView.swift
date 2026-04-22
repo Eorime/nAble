@@ -5,6 +5,7 @@ struct PhotoCaptureView: View {
     var onComplete: (UIImage?) -> Void
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
+    @State private var showCamera = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -20,27 +21,41 @@ struct PhotoCaptureView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             }
 
-            PhotosPicker(selection: $selectedItem, matching: .images) {
-                Text(selectedImage == nil ? "Choose Photo" : "Change Photo")
-                    .font(.custom("FiraGO-Regular", size: 13))
-                    .foregroundColor(Color("AppGreen"))
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity)
-                    .background(Color("AppGreen").opacity(0.1))
-                    .cornerRadius(8)
-            }
-            .onChange(of: selectedItem) { newItem in
-                Task {
-                    if let data = try? await newItem?.loadTransferable(type: Data.self),
-                       let image = UIImage(data: data) {
-                        selectedImage = image
+            HStack(spacing: 12) {
+                Button {
+                    showCamera = true
+                } label: {
+                    Label("Camera", systemImage: "camera")
+                        .font(.custom("FiraGO-Regular", size: 13))
+                        .foregroundColor(Color("AppGreen"))
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(Color("AppGreen").opacity(0.1))
+                        .cornerRadius(8)
+                }
+
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    Label("Library", systemImage: "photo")
+                        .font(.custom("FiraGO-Regular", size: 13))
+                        .foregroundColor(Color("AppGreen"))
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(Color("AppGreen").opacity(0.1))
+                        .cornerRadius(8)
+                }
+                .onChange(of: selectedItem) { newItem in
+                    Task {
+                        if let data = try? await newItem?.loadTransferable(type: Data.self),
+                           let image = UIImage(data: data) {
+                            selectedImage = image
+                        }
                     }
                 }
             }
 
             HStack(spacing: 12) {
                 Button {
-                    onComplete(nil) 
+                    onComplete(nil)
                 } label: {
                     Text("Skip")
                         .font(.custom("FiraGO-Regular", size: 13))
@@ -68,5 +83,8 @@ struct PhotoCaptureView: View {
         .background(Color("AppBG"))
         .cornerRadius(10)
         .frame(maxWidth: 340)
+        .sheet(isPresented: $showCamera) {
+            CameraPickerView(image: $selectedImage)
+        }
     }
 }

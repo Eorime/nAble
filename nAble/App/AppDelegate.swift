@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  nAble
-//
-//  Created by Eorime on 05.04.26.
-//
-
 import UIKit
 import FirebaseCore
 //googlesignin mere

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>We need camera access to take photos of locations</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>nAble uses your location to find accessible places nearby</string>
 	<key>GooglePlacesAPIKey</key>

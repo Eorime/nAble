@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  nAble
-//
-//  Created by Eorime on 05.04.26.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

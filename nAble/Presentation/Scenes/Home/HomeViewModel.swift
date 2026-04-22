@@ -139,7 +139,7 @@ class HomeViewModel: ObservableObject {
     func handleMapTap(at coordinate: CLLocationCoordinate2D) {
         guard currentStep == .markLocation else { return }
         selectedCoordinate = coordinate
-        addLocation()
+        addLocation(image: selectedImage)
     }
     
     func addLocation(image: UIImage? = nil) {
