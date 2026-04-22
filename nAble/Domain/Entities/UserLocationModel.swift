@@ -9,7 +9,7 @@ struct UserLocationModel: Identifiable, Codable, Hashable {
     let userId: String
     let username: String
     let timeStamp: Date
-    //image
+    let imageURL: String?
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -23,5 +23,6 @@ struct UserLocationModel: Identifiable, Codable, Hashable {
         case userId
         case username
         case timeStamp
+        case imageURL
     }
 }

@@ -11,8 +11,8 @@ protocol LocationRepositoryProtocol {
 class LocationRepository: LocationRepositoryProtocol {
     private let db = Firestore.firestore()
     
-    func addLocation(userId: String, location: UserLocationModel, completion: @escaping (Result<Void, any Error>) -> Void) {
-        let locationData: [String: Any] = [
+    func addLocation(userId: String, location: UserLocationModel, completion: @escaping (Result<Void, Error>) -> Void) {
+        var locationData: [String: Any] = [
             "id": location.id,
             "latitude": location.latitude,
             "longitude": location.longitude,
@@ -21,17 +21,18 @@ class LocationRepository: LocationRepositoryProtocol {
             "username": location.username,
             "timestamp": Timestamp(date: location.timeStamp)
         ]
-        
+
+        if let imageURL = location.imageURL {
+            locationData["imageURL"] = imageURL
+        }
+
         db.collection("users")
             .document(userId)
             .collection("locations")
             .document(location.id)
             .setData(locationData) { error in
-                if let error = error {
-                    completion(.failure(error))
-                } else {
-                    completion(.success(()))
-                }
+                if let error = error { completion(.failure(error)) }
+                else { completion(.success(())) }
             }
     }
     
@@ -81,7 +82,8 @@ class LocationRepository: LocationRepositoryProtocol {
                         locationId: locationId,
                         userId: userId,
                         username: username,
-                        timeStamp: timestamp.dateValue()
+                        timeStamp: timestamp.dateValue(),
+                        imageURL: data["imageURL"] as? String
                     )
                 }
                 completion(.success(locations))
@@ -120,7 +122,8 @@ class LocationRepository: LocationRepositoryProtocol {
                         locationId: locationId,
                         userId: userId,
                         username: username,
-                        timeStamp: timestamp.dateValue()
+                        timeStamp: timestamp.dateValue(),
+                        imageURL: data["imageURL"] as? String
                     )
                 }
                 completion(.success(locations))

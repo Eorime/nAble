@@ -90,6 +90,10 @@ struct HomeView: View {
             case .markLocation:
                 MarkLocationInstructionView()
                     .allowsHitTesting(false)
+            case .addPhoto:
+                PhotoCaptureView { image in
+                    viewModel.confirmPhoto(image)
+                }
             }
             Spacer()
         }

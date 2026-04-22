@@ -17,6 +17,7 @@ class HomeViewModel: ObservableObject {
         center: CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     ))
+    @Published var selectedImage: UIImage?
     
     // MARK: Properties
     var profile: User?
@@ -28,10 +29,12 @@ class HomeViewModel: ObservableObject {
     private let addLocationUseCase: AddLocationUseCaseProtocol
     private let getAllLocationsUseCase: GetAllLocationsUseCaseProtocol
     private let removeLocationUseCase: RemoveLocationUseCaseProtocol
+    private let imageRepository: ImageRepositoryProtocol
     
     // MARK: Enums
     enum AddLocationStep {
         case selectType
+        case addPhoto
         case markLocation
     }
     
@@ -41,13 +44,15 @@ class HomeViewModel: ObservableObject {
         locationService: LocationServiceProtocol,
         addLocationUseCase: AddLocationUseCaseProtocol,
         getAllLocationsUseCase: GetAllLocationsUseCaseProtocol,
-        removeLocationUseCase: RemoveLocationUseCaseProtocol
+        removeLocationUseCase: RemoveLocationUseCaseProtocol,
+        imageRepository: ImageRepositoryProtocol
     ) {
         self.getCurrentLocation = getCurrentLocation
         self.locationService = locationService
         self.addLocationUseCase = addLocationUseCase
         self.getAllLocationsUseCase = getAllLocationsUseCase
         self.removeLocationUseCase = removeLocationUseCase
+        self.imageRepository = imageRepository
     }
     
     // MARK: Location Tracking
@@ -123,6 +128,11 @@ class HomeViewModel: ObservableObject {
     
     func selectType(_ type: String) {
         selectedType = type
+        currentStep = .addPhoto
+    }
+    
+    func confirmPhoto(_ image: UIImage?) {
+        selectedImage = image
         currentStep = .markLocation
     }
     
@@ -132,7 +142,7 @@ class HomeViewModel: ObservableObject {
         addLocation()
     }
     
-    func addLocation() {
+    func addLocation(image: UIImage? = nil) {
         guard let userId = profile?.id,
               let username = profile?.userName,
               let coordinate = selectedCoordinate,
@@ -140,31 +150,50 @@ class HomeViewModel: ObservableObject {
             errorMessage = "Missing required information"
             return
         }
-        
-        let newLocation = UserLocationModel(
-            id: UUID().uuidString,
-            latitude: coordinate.latitude,
-            longitude: coordinate.longitude,
-            locationId: type,
-            userId: userId,
-            username: username,
-            timeStamp: Date()
-        )
-        
+
+        let locationId = UUID().uuidString
         isLoading = true
-        errorMessage = nil
-        
-        addLocationUseCase.execute(userId: userId, location: newLocation) { [weak self] result in
-            Task { @MainActor in
-                self?.isLoading = false
-                switch result {
-                case .success:
-                    self?.cancelAddingLocation()
-                    await self?.loadLocations()
-                case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+
+        func save(imageURL: String?) {
+            let newLocation = UserLocationModel(
+                id: locationId,
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                locationId: type,
+                userId: userId,
+                username: username,
+                timeStamp: Date(),
+                imageURL: imageURL
+            )
+
+            addLocationUseCase.execute(userId: userId, location: newLocation) { [weak self] result in
+                Task { @MainActor in
+                    self?.isLoading = false
+                    switch result {
+                    case .success:
+                        self?.cancelAddingLocation()
+                        await self?.loadLocations()
+                    case .failure(let error):
+                        self?.errorMessage = error.localizedDescription
+                    }
                 }
             }
+        }
+
+        if let image = image {
+            let path = "locations/\(userId)/\(locationId).jpg"
+            imageRepository.uploadImage(image, path: path) { [weak self] result in
+                switch result {
+                case .success(let url): save(imageURL: url)
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self?.isLoading = false
+                        self?.errorMessage = error.localizedDescription
+                    }
+                }
+            }
+        } else {
+            save(imageURL: nil)
         }
     }
     

@@ -62,7 +62,8 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
             locationService: locationService,
             addLocationUseCase: AddLocationUseCase(repository: locationRepository),
             getAllLocationsUseCase: GetAllLocationsUseCase(repository: locationRepository),
-            removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository)
+            removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository),
+            imageRepository: ImageRepository()
         )
         homeVM.profile = currentUser
         let homeVC = UIHostingController(rootView: HomeView(viewModel: homeVM))
