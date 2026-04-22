@@ -5,11 +5,11 @@ import CoreLocation
 struct HomeView: View {
     @StateObject var viewModel: HomeViewModel
     @State private var selectedLocation: UserLocationModel?
-    @State private var cameraPosition: MapCameraPosition = .automatic
     
     var body: some View {
         ZStack {
             mapLayer
+            addLocationOverlay
             locationControls
             addButton
         }
@@ -29,22 +29,13 @@ struct HomeView: View {
                 await viewModel.loadLocations()
             }
         }
-        .onChange(of: viewModel.userLocation) { _, newLocation in
-            guard let location = newLocation else { return }
-            withAnimation {
-                cameraPosition = .region(MKCoordinateRegion(
-                    center: location,
-                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                ))
-            }
-        }
         .animation(.easeInOut, value: viewModel.isAddingLocation)
         .animation(.easeInOut, value: viewModel.currentStep)
     }
     
     private var mapLayer: some View {
         MapReader { proxy in
-            Map(position: $cameraPosition) {
+            Map(position: $viewModel.cameraPosition) {
                 ForEach(viewModel.locations) { location in
                     Annotation("", coordinate: CLLocationCoordinate2D(
                         latitude: location.latitude,
@@ -73,6 +64,36 @@ struct HomeView: View {
         }
     }
     
+    private var addLocationOverlay: some View {
+        Group {
+            if viewModel.isAddingLocation {
+                ZStack {
+                    if viewModel.currentStep != .markLocation {
+                        Color.black.opacity(0.4)
+                            .ignoresSafeArea()
+                    }
+                    modalContent
+                }
+                .animation(.easeInOut(duration: 0.2), value: viewModel.currentStep)
+            }
+        }
+    }
+    
+    private var modalContent: some View {
+        VStack {
+            Spacer()
+            switch viewModel.currentStep {
+            case .selectType:
+                TypeSelectionModal(viewModel: viewModel)
+            case .markLocation:
+                MarkLocationInstructionView()
+                    .allowsHitTesting(false)
+            }
+            Spacer()
+        }
+        .allowsHitTesting(viewModel.currentStep != .markLocation)
+    }
+    
     private var locationControls: some View {
         VStack {
             Spacer()
@@ -80,7 +101,7 @@ struct HomeView: View {
                 Button {
                     guard let location = viewModel.userLocation else { return }
                     withAnimation {
-                        cameraPosition = .region(MKCoordinateRegion(
+                        viewModel.cameraPosition = .region(MKCoordinateRegion(
                             center: location,
                             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
                         ))
@@ -110,19 +131,9 @@ struct HomeView: View {
                     Spacer()
                     HStack {
                         Spacer()
-                        Button {
-                            viewModel.startAddingLocation()
-                        } label: {
-                            Image(systemName: "plus")
-                                .foregroundColor(.white)
-                                .font(.system(size: 20, weight: .bold))
-                                .frame(width: 56, height: 56)
-                                .background(Color("AppGreen"))
-                                .clipShape(Circle())
-                                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                        }
-                        .padding(.trailing, 20)
-                        .padding(.bottom, 20)
+                        AddLocationButton(vm: viewModel)
+                            .padding(.trailing, 20)
+                            .padding(.bottom, 20)
                     }
                 }
             }

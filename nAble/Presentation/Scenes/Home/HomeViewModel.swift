@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 import Combine
 import CoreLocation
 
@@ -12,6 +13,10 @@ class HomeViewModel: ObservableObject {
     @Published var currentStep: AddLocationStep = .selectType
     @Published var selectedType: String?
     @Published var selectedCoordinate: CLLocationCoordinate2D?
+    @Published var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271),
+        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    ))
     
     // MARK: Properties
     var profile: User?
@@ -120,6 +125,7 @@ class HomeViewModel: ObservableObject {
     func handleMapTap(at coordinate: CLLocationCoordinate2D) {
         guard currentStep == .markLocation else { return }
         selectedCoordinate = coordinate
+        addLocation()
     }
     
     func addLocation() {
