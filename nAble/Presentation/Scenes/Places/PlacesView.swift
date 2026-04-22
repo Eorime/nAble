@@ -2,10 +2,11 @@ import SwiftUI
 
 struct PlacesView: View {
     @ObservedObject var viewModel: PlacesViewModel
+    var placesHeader = PlacesHeader()
 
     var body: some View {
         ScrollView {
-            PlacesHeader()
+            placesHeader
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.places, id: \.id) { place in
                     PlaceCard(place: place, onSave: { place in

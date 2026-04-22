@@ -9,10 +9,10 @@ struct PlacesHeader: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Accessible Places")
                     .foregroundStyle(Color("AppBlack"))
-                    .font(.custom("FiraGO-Bold", size: 24))
+                    .font(.custom("FiraGO-Medium", size: 24))
                 Text("Wheelchair friendly spots near you")
                     .foregroundStyle(Color("AppBlack").opacity(0.5))
-                    .font(.custom("FiraGO-Medium", size: 14))
+                    .font(.custom("FiraGO-Regular", size: 14))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
