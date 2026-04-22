@@ -37,7 +37,6 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         
         let appearance = UITabBarAppearance()
         appearance.backgroundColor = UIColor(named: "AppBG")
-        
         appearance.shadowColor = nil
         appearance.shadowImage = nil
         
@@ -46,28 +45,34 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(named: "AppGreen")!]
         itemAppearance.normal.iconColor = UIColor(named: "AppGreen")?.withAlphaComponent(0.5)
         appearance.stackedLayoutAppearance = itemAppearance
-        
         tabBar.tabBar.standardAppearance = appearance
         tabBar.tabBar.scrollEdgeAppearance = appearance
         
-//        let getCurrentLocation = GetCurrentLocationUseCase(locationService: locationService)
+        let locationRepository = LocationRepository()
+        
+        // Places
         let placesVM = PlacesViewModel(locationService: locationService)
         self.placesViewModel = placesVM
-        let placesView = PlacesView(viewModel: placesVM)
-        let placesVC = UIHostingController(rootView: placesView)
+        let placesVC = UIHostingController(rootView: PlacesView(viewModel: placesVM))
         placesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location", withConfiguration: symbolConfig), tag: 0)
         
-        let homeView = HomeView()
-        let homeVC = UIHostingController(rootView: homeView)
+        // Home
+        let homeVM = HomeViewModel(
+            getCurrentLocation: GetCurrentLocationUseCase(locationService: locationService),
+            locationService: locationService,
+            addLocationUseCase: AddLocationUseCase(repository: locationRepository),
+            getAllLocationsUseCase: GetAllLocationsUseCase(repository: locationRepository),
+            removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository)
+        )
+        let homeVC = UIHostingController(rootView: HomeView(viewModel: homeVM))
         homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map", withConfiguration: symbolConfig), tag: 1)
         
-        let profileView = ProfileView()
-        let profileVC = UIHostingController(rootView: profileView)
+        // Profile
+        let profileVC = UIHostingController(rootView: ProfileView())
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person", withConfiguration: symbolConfig), tag: 2)
         
         tabBar.viewControllers = [placesVC, homeVC, profileVC]
         tabBar.selectedIndex = 1
-        
         window.rootViewController = tabBar
         window.makeKeyAndVisible()
     }
