@@ -108,7 +108,7 @@ extension LocationService: CLLocationManagerDelegate {
     }
 }
 
-enum LocationError: Error {
+enum LocationError: Error, Equatable {
     case permissionDenied
     case locationUnavailable
     case unknown

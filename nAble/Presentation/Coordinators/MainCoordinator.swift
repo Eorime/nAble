@@ -64,6 +64,7 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
             getAllLocationsUseCase: GetAllLocationsUseCase(repository: locationRepository),
             removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository)
         )
+        homeVM.profile = currentUser
         let homeVC = UIHostingController(rootView: HomeView(viewModel: homeVM))
         homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map", withConfiguration: symbolConfig), tag: 1)
         
