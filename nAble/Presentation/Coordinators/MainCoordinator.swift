@@ -50,13 +50,13 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         
         let locationRepository = LocationRepository()
         
-        // Places
+        //Places
         let placesVM = PlacesViewModel(locationService: locationService)
         self.placesViewModel = placesVM
         let placesVC = UIHostingController(rootView: PlacesView(viewModel: placesVM))
         placesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location", withConfiguration: symbolConfig), tag: 0)
         
-        // Home
+        //Home
         let homeVM = HomeViewModel(
             getCurrentLocation: GetCurrentLocationUseCase(locationService: locationService),
             locationService: locationService,
@@ -69,7 +69,7 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         let homeVC = UIHostingController(rootView: HomeView(viewModel: homeVM))
         homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map", withConfiguration: symbolConfig), tag: 1)
         
-        // Profile
+        //Profile
         let profileVC = UIHostingController(rootView: ProfileView())
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person", withConfiguration: symbolConfig), tag: 2)
         

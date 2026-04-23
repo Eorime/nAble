@@ -116,7 +116,7 @@ struct HomeView: View {
                     withAnimation {
                         viewModel.cameraPosition = .region(MKCoordinateRegion(
                             center: location,
-                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                         ))
                     }
                 } label: {

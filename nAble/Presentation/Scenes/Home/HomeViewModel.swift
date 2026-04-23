@@ -4,7 +4,7 @@ import Combine
 import CoreLocation
 
 class HomeViewModel: ObservableObject {
-    // MARK: Published
+    //MARK: Published
     @Published var userLocation: CLLocationCoordinate2D?
     @Published var locations: [UserLocationModel] = []
     @Published var isLoading = false
@@ -15,15 +15,15 @@ class HomeViewModel: ObservableObject {
     @Published var selectedCoordinate: CLLocationCoordinate2D?
     @Published var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 41.7151, longitude: 44.8271),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     ))
     @Published var selectedImage: UIImage?
     
-    // MARK: Properties
+    //MARK: Properties
     var profile: User?
     var isLoggedIn: Bool { profile != nil }
     
-    // MARK: Use Cases
+    //MARK: Use Cases
     private let getCurrentLocation: GetCurrentLocationUseCaseProtocol
     private let locationService: LocationServiceProtocol
     private let addLocationUseCase: AddLocationUseCaseProtocol
@@ -31,14 +31,14 @@ class HomeViewModel: ObservableObject {
     private let removeLocationUseCase: RemoveLocationUseCaseProtocol
     private let imageRepository: ImageRepositoryProtocol
     
-    // MARK: Enums
+    //MARK: Enums
     enum AddLocationStep {
         case selectType
         case addPhoto
         case markLocation
     }
     
-    // MARK: Init
+    //MARK: Init
     init(
         getCurrentLocation: GetCurrentLocationUseCaseProtocol,
         locationService: LocationServiceProtocol,
@@ -55,7 +55,7 @@ class HomeViewModel: ObservableObject {
         self.imageRepository = imageRepository
     }
     
-    // MARK: Location Tracking
+    //MARK: Location Tracking
     func requestLocation() {
         getCurrentLocation.execute { [weak self] result in
             switch result {
@@ -64,10 +64,19 @@ class HomeViewModel: ObservableObject {
                     self?.userLocation = coordinate
                     self?.cameraPosition = .region(MKCoordinateRegion(
                         center: coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     ))
                 }
             case .failure(let error):
+                if let clError = error as? CLError, clError.code == .locationUnknown {
+                    return
+                }
+                if let locationError = error as? LocationError, locationError == .unknown {
+                    return
+                }
+                if let locationError = error as? LocationError, locationError == .locationUnavailable {
+                    return
+                }
                 DispatchQueue.main.async {
                     self?.errorMessage = error.localizedDescription
                 }
@@ -87,7 +96,7 @@ class HomeViewModel: ObservableObject {
         locationService.stopMonitoringLocation()
     }
     
-    // MARK: Load Locations
+    //MARK: Load Locations
     @MainActor
     func loadLocations() async {
         isLoading = true
@@ -109,7 +118,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    // MARK: Add Location
+    //MARK: Add Location
     func startAddingLocation() {
         guard isLoggedIn else {
             errorMessage = "You must be logged in to add a location"
@@ -197,7 +206,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    // MARK: Remove Location
+    //MARK: Remove Location
     func removeLocation(userId: String, locationId: String) {
         isLoading = true
         

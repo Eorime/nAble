@@ -1,10 +1,3 @@
-//
-//  LogInView.swift
-//  nAble
-//
-//  Created by Eorime on 17.04.26.
-//
-
 import UIKit
 
 class SignUpViewController: UIViewController {

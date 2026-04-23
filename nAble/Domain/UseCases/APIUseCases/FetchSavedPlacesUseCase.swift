@@ -1,11 +1,3 @@
-//
-//  FetchSavedPlacesUseCase.swift
-//  nAble
-//
-//  Created by Eorime on 20.04.26.
-//
-
-
 class FetchSavedPlacesUseCase {
     private let repository: PlacesRepositoryProtocol
     

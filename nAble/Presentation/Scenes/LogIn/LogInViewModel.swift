@@ -78,4 +78,3 @@ class LoginViewModel {
 }
 
 //TODO: places ro daachers, mapze current lokaciidan manamde marshruti, but also details page tavisi reviewebit (sheet ufro saidanac mapze gadavalt)
-//TODO: useris mier adgilis damatebis funqcionali fototi
