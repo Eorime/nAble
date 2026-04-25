@@ -144,3 +144,9 @@ class FirebaseAuthRepository: AuthRepository {
         }
     }
 }
+
+//TODO: places details sheet + open in maps
+//TODO: add google sign in
+//TODO: profile page favorited places horizontal scroll + page for your locations/remove
+//TODO: added location details (vin daamata, rodis, foto)
+//TODO: add picture field to user, optional
