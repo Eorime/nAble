@@ -12,6 +12,7 @@ struct PlacesView: View {
                     PlaceCard(
                         place: place,
                         initialIsSaved: viewModel.savedPlaceIds.contains(place.id),
+                        isLoggedIn: !viewModel.userId.isEmpty,
                         onSave: { place in
                             viewModel.toggleSavePlace(place: place)
                         }

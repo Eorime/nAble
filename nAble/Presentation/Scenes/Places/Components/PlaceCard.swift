@@ -4,12 +4,14 @@ struct PlaceCard: View {
     let place: Place
     let onSave: (Place) -> Void
     let initialIsSaved: Bool
+    let isLoggedIn: Bool
     @State private var isSaved: Bool
 
-    init(place: Place, initialIsSaved: Bool = false, onSave: @escaping (Place) -> Void) {
+    init(place: Place, initialIsSaved: Bool = false, isLoggedIn: Bool = false, onSave: @escaping (Place) -> Void) {
         self.place = place
         self.onSave = onSave
         self.initialIsSaved = initialIsSaved
+        self.isLoggedIn = isLoggedIn
         self._isSaved = State(initialValue: initialIsSaved)
     }
 
@@ -35,12 +37,15 @@ struct PlaceCard: View {
 
                     Spacer()
 
+                    if isLoggedIn {
+                        
                     Button {
                         isSaved.toggle()
                         onSave(place)
                     } label: {
                         Image(systemName: isSaved ? "heart.fill" : "heart")
                             .foregroundColor(isSaved ? Color("AppRed") : Color("AppGray"))
+                        }
                     }
                 }
 

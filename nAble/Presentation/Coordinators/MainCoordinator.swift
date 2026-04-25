@@ -78,6 +78,7 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
             logoutUseCase: LogoutUseCase(authRepo: authRepository),
             deleteAccountUseCase: DeleteAccountUseCase(authRepo: authRepository)
         )
+        profileVM.coordinator = self.delegate as? AppCoordinator
         let profileVC = UIHostingController(rootView: ProfileView(vm: profileVM))
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person", withConfiguration: symbolConfig), tag: 2)
         

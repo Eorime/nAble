@@ -15,7 +15,7 @@ class PlacesViewModel: ObservableObject {
     private let removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
     private let fetchSavedPlacesUseCase: FetchSavedPlacesUseCase
     
-    private var userId: String
+    var userId: String
     var savedPlaceIds: Set<String> {
         Set(savedPlaces.map { $0.id })
     }
@@ -71,12 +71,13 @@ class PlacesViewModel: ObservableObject {
     }
     
     func loadInitialPlaces() {
+        guard !userId.isEmpty else { return }
         locationService.getCurrentLocation { [weak self] result in
             switch result {
             case .success(let coordinate):
                 DispatchQueue.main.async {
                     self?.loadNearbyPlaces(coordinate: coordinate)
-                    self?.loadSavedPlaces() 
+                    self?.loadSavedPlaces()
                 }
             case .failure(let error):
                 print("Location error: \(error)")
@@ -85,6 +86,7 @@ class PlacesViewModel: ObservableObject {
     }
     
     func toggleSavePlace(place: Place) {
+        guard !userId.isEmpty else { return }
         if savedPlaceIds.contains(place.id) {
             removeSavedPlace(placeId: place.id)
         } else {
@@ -93,6 +95,7 @@ class PlacesViewModel: ObservableObject {
     }
     
     private func savePlace(place: Place) {
+        guard !userId.isEmpty else { return }
         Task {
             do {
                 try await savePlaceUseCase.execute(userId: userId, place: place)
@@ -110,6 +113,7 @@ class PlacesViewModel: ObservableObject {
     }
     
     private func removeSavedPlace(placeId: String) {
+        guard !userId.isEmpty else { return }
         Task {
             do {
                 try await removeSavedPlaceUseCase.execute(userId: userId, placeId: placeId)
@@ -125,6 +129,7 @@ class PlacesViewModel: ObservableObject {
     }
     
     func loadSavedPlaces() {
+        guard !userId.isEmpty else { return }
         Task {
             do {
                 let places = try await fetchSavedPlacesUseCase.execute(userId: userId)
