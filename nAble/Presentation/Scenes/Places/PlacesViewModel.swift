@@ -15,7 +15,13 @@ class PlacesViewModel: ObservableObject {
     private let removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
     private let fetchSavedPlacesUseCase: FetchSavedPlacesUseCase
     
+    private var userId: String
+    var savedPlaceIds: Set<String> {
+        Set(savedPlaces.map { $0.id })
+    }
+    
     init(
+        userId: String,
         locationService: LocationServiceProtocol = LocationService(),
         fetchNearbyPlaces: FetchNearbyPlacesUseCase = FetchNearbyPlacesUseCase(),
         savePlaceUseCase: SavePlaceUseCase = SavePlaceUseCase(),
@@ -27,6 +33,7 @@ class PlacesViewModel: ObservableObject {
         self.savePlaceUseCase = savePlaceUseCase
         self.removeSavedPlaceUseCase = removeSavedPlaceUseCase
         self.fetchSavedPlacesUseCase = fetchSavedPlacesUseCase
+        self.userId = userId
     }
     
     func startLocationMonitoring() {
@@ -63,10 +70,37 @@ class PlacesViewModel: ObservableObject {
         }
     }
     
-    func savePlace(userId: String, place: Place) {
+    func loadInitialPlaces() {
+        locationService.getCurrentLocation { [weak self] result in
+            switch result {
+            case .success(let coordinate):
+                DispatchQueue.main.async {
+                    self?.loadNearbyPlaces(coordinate: coordinate)
+                    self?.loadSavedPlaces() 
+                }
+            case .failure(let error):
+                print("Location error: \(error)")
+            }
+        }
+    }
+    
+    func toggleSavePlace(place: Place) {
+        if savedPlaceIds.contains(place.id) {
+            removeSavedPlace(placeId: place.id)
+        } else {
+            savePlace(place: place)
+        }
+    }
+    
+    private func savePlace(place: Place) {
         Task {
             do {
                 try await savePlaceUseCase.execute(userId: userId, place: place)
+                await MainActor.run {
+                    if !savedPlaces.contains(where: { $0.id == place.id }) {
+                        self.savedPlaces.append(place)
+                    }
+                }
             } catch {
                 await MainActor.run {
                     self.error = error
@@ -75,10 +109,13 @@ class PlacesViewModel: ObservableObject {
         }
     }
     
-    func removeSavedPlace(userId: String, placeId: String) {
+    private func removeSavedPlace(placeId: String) {
         Task {
             do {
                 try await removeSavedPlaceUseCase.execute(userId: userId, placeId: placeId)
+                await MainActor.run {
+                    self.savedPlaces.removeAll { $0.id == placeId }
+                }
             } catch {
                 await MainActor.run {
                     self.error = error
@@ -87,7 +124,7 @@ class PlacesViewModel: ObservableObject {
         }
     }
     
-    func loadSavedPlaces(userId: String) {
+    func loadSavedPlaces() {
         Task {
             do {
                 let places = try await fetchSavedPlacesUseCase.execute(userId: userId)
@@ -100,18 +137,5 @@ class PlacesViewModel: ObservableObject {
                 }
             }
         }
-    }
-    
-    func loadInitialPlaces() {
-        locationService.getCurrentLocation { [weak self] result in
-                switch result {
-                case .success(let coordinate):
-                    DispatchQueue.main.async {
-                        self?.loadNearbyPlaces(coordinate: coordinate)
-                    }
-                case .failure(let error):
-                    print("Location error: \(error)")
-                }
-            }
     }
 }

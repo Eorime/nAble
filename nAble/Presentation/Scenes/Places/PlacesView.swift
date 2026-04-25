@@ -9,9 +9,13 @@ struct PlacesView: View {
             placesHeader
             LazyVStack(spacing: 16) {
                 ForEach(viewModel.places, id: \.id) { place in
-                    PlaceCard(place: place, onSave: { place in
-                        viewModel.savePlace(userId: "CURRENT_USER_ID", place: place)
-                    })
+                    PlaceCard(
+                        place: place,
+                        initialIsSaved: viewModel.savedPlaceIds.contains(place.id),
+                        onSave: { place in
+                            viewModel.toggleSavePlace(place: place)
+                        }
+                    )
                     .padding(.horizontal, 16)
                 }
             }
@@ -19,7 +23,7 @@ struct PlacesView: View {
         }
         .background(Color("AppBG"))
         .onAppear {
-            viewModel.loadInitialPlaces() 
+            viewModel.loadInitialPlaces()
             viewModel.startLocationMonitoring()
         }
         .onDisappear {

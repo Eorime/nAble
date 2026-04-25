@@ -1,7 +1,30 @@
-//
-//  FavoritePlaces.swift
-//  nAble
-//
-//  Created by Eorime on 25.04.26.
-//
+import SwiftUI
 
+struct FavoritePlaces: View {
+    let places: [Place]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Favorite Places")
+                .font(.custom("FiraGO-SemiBold", size: 16))
+                .foregroundColor(Color("AppBlack"))
+                .padding(.horizontal)
+            
+            if places.isEmpty {
+                Text("No saved places yet")
+                    .font(.custom("FiraGO-Regular", size: 13))
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(places, id: \.id) { place in
+                            FavoritePlaceCard(place: place)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
+    }
+}

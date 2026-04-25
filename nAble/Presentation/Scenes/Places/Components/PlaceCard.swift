@@ -3,8 +3,16 @@ import SwiftUI
 struct PlaceCard: View {
     let place: Place
     let onSave: (Place) -> Void
-    @State private var isSaved: Bool = false
-    
+    let initialIsSaved: Bool
+    @State private var isSaved: Bool
+
+    init(place: Place, initialIsSaved: Bool = false, onSave: @escaping (Place) -> Void) {
+        self.place = place
+        self.onSave = onSave
+        self.initialIsSaved = initialIsSaved
+        self._isSaved = State(initialValue: initialIsSaved)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             AsyncImage(url: PlacesService.shared.getPhotoURL(photoName: place.photos.first?.reference ?? "")) { image in
@@ -17,30 +25,30 @@ struct PlaceCard: View {
             }
             .frame(height: 180)
             .clipped()
-            
+
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(place.name)
                         .font(.custom("FiraGO-Regular", size: 18))
                         .foregroundColor(Color("AppBlack"))
                         .lineLimit(1)
-                    
+
                     Spacer()
-                    
+
                     Button {
                         isSaved.toggle()
                         onSave(place)
                     } label: {
                         Image(systemName: isSaved ? "heart.fill" : "heart")
-                            .foregroundColor(isSaved ? Color("AppRed") : Color("AppGray") )
+                            .foregroundColor(isSaved ? Color("AppRed") : Color("AppGray"))
                     }
                 }
-                
+
                 Text(place.address)
                     .font(.custom("FiraGO-Regular", size: 14))
                     .foregroundColor(Color("AppGray").opacity(0.5))
                     .lineLimit(2)
-                
+
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill")
                         .foregroundColor(.yellow)
@@ -49,7 +57,7 @@ struct PlaceCard: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                
+
                 HStack(spacing: 8) {
                     if place.accessibilityOptions.hasWheelchairEntrance {
                         AccessibilityBadge(icon: "figure.roll", label: "Entrance")
@@ -71,4 +79,3 @@ struct PlaceCard: View {
         .cornerRadius(8)
     }
 }
-

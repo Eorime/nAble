@@ -51,7 +51,7 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         let locationRepository = LocationRepository()
         
         //Places
-        let placesVM = PlacesViewModel(locationService: locationService)
+        let placesVM = PlacesViewModel(userId: currentUser?.id ?? "", locationService: locationService)
         self.placesViewModel = placesVM
         let placesVC = UIHostingController(rootView: PlacesView(viewModel: placesVM))
         placesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location", withConfiguration: symbolConfig), tag: 0)
@@ -70,7 +70,15 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map", withConfiguration: symbolConfig), tag: 1)
         
         //Profile
-        let profileVC = UIHostingController(rootView: ProfileView())
+        let authRepository = FirebaseAuthRepository()
+        let profileVM = ProfileViewModel(
+            profile: currentUser,
+            fetchSavedPlacesUseCase: FetchSavedPlacesUseCase(),
+            getLocationsUseCase: GetLocationsUseCase(repository: locationRepository),
+            logoutUseCase: LogoutUseCase(authRepo: authRepository),
+            deleteAccountUseCase: DeleteAccountUseCase(authRepo: authRepository)
+        )
+        let profileVC = UIHostingController(rootView: ProfileView(vm: profileVM))
         profileVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "person", withConfiguration: symbolConfig), tag: 2)
         
         tabBar.viewControllers = [placesVC, homeVC, profileVC]

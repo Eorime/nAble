@@ -1,6 +1,6 @@
 import UIKit
 
-struct Place {
+struct Place: Codable {
     let id: String
     let name: String
     let address: String
@@ -10,14 +10,14 @@ struct Place {
     let photos: [Photo]
     let location: Location
     
-    struct AccessibilityOptions {
+    struct AccessibilityOptions: Codable {
         let hasWheelchairEntrance: Bool
         let hasWheelchairRestroom: Bool
         let hasWheelchairParking: Bool
         let hasWheelchairSeating: Bool
     }
     
-    struct Review {
+    struct Review: Codable {
         let rating: Int
         let text: String
         let relativeTime: String
@@ -25,13 +25,13 @@ struct Place {
         let authorPhotoUrl: String?
     }
     
-    struct Photo {
+    struct Photo: Codable {
         let reference: String
         let width: Int
         let height: Int
     }
     
-    struct Location {
+    struct Location: Codable {
         let latitude: Double
         let longitude: Double
     }

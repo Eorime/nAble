@@ -7,6 +7,8 @@ protocol PlacesRepositoryProtocol {
     func fetchSavedPlaces(userId: String) async throws -> [Place]
 }
 
+import FirebaseFirestore
+
 class PlacesRepository: PlacesRepositoryProtocol {
     private let db = Firestore.firestore()
     private let service = PlacesService.shared
@@ -45,7 +47,12 @@ class PlacesRepository: PlacesRepositoryProtocol {
             "hasWheelchairEntrance": place.accessibilityOptions.hasWheelchairEntrance,
             "hasWheelchairRestroom": place.accessibilityOptions.hasWheelchairRestroom,
             "hasWheelchairParking": place.accessibilityOptions.hasWheelchairParking,
-            "hasWheelchairSeating": place.accessibilityOptions.hasWheelchairSeating
+            "hasWheelchairSeating": place.accessibilityOptions.hasWheelchairSeating,
+            "photos": place.photos.map { [
+                "reference": $0.reference,
+                "width": $0.width,
+                "height": $0.height
+            ]}
         ]
         
         try await db.collection("users")
@@ -80,6 +87,14 @@ class PlacesRepository: PlacesRepositoryProtocol {
                 return nil
             }
             
+            let photos = (data["photos"] as? [[String: Any]] ?? []).map {
+                Place.Photo(
+                    reference: $0["reference"] as? String ?? "",
+                    width: $0["width"] as? Int ?? 0,
+                    height: $0["height"] as? Int ?? 0
+                )
+            }
+            
             return Place(
                 id: id,
                 name: name,
@@ -92,7 +107,7 @@ class PlacesRepository: PlacesRepositoryProtocol {
                     hasWheelchairSeating: data["hasWheelchairSeating"] as? Bool ?? false
                 ),
                 reviews: [],
-                photos: [],
+                photos: photos,
                 location: Place.Location(
                     latitude: latitude,
                     longitude: longitude

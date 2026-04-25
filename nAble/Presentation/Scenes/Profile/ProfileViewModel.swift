@@ -21,11 +21,15 @@ class ProfileViewModel: ObservableObject {
     init(
            profile: User?,
            fetchSavedPlacesUseCase: FetchSavedPlacesUseCase,
-           getLocationsUseCase: GetLocationsUseCaseProtocol
+           getLocationsUseCase: GetLocationsUseCaseProtocol,
+           logoutUseCase: LogoutUseCase,
+           deleteAccountUseCase: DeleteAccountUseCase
        ) {
            self.profile = profile
            self.fetchFavoritePlaces = fetchSavedPlacesUseCase
            self.getLocationsUseCase = getLocationsUseCase
+           self.logoutUseCase = logoutUseCase
+           self.deleteAccountUseCase = deleteAccountUseCase
        }
     
     @MainActor
