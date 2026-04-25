@@ -3,25 +3,12 @@ import SwiftUI
 struct TypeSelectionModal: View {
     @ObservedObject var viewModel: HomeViewModel
     @State private var selectedCategory: Category? = nil
+    let accessibilityTypes = LocationType.all.filter { ["friendly", "friendlyParking", "friendlyWC"].contains($0.id) }
+    let problemTypes = LocationType.all.filter { !["friendly", "friendlyParking", "friendlyWC"].contains($0.id) }
     
     enum Category {
         case accessibility, problem
     }
-    
-    let accessibilityTypes = [
-        ("friendly", "Friendly"),
-        ("friendlyParking", "Friendly Parking"),
-        ("friendlyWC", "Friendly WC")
-    ]
-    
-    let problemTypes = [
-        ("mildElevation", "Mild Elevation"),
-        ("mildRoad", "Mild Road"),
-        ("railedStairs", "Railed Stairs"),
-        ("roughElevation", "Rough Elevation"),
-        ("roughRoad", "Rough Road"),
-        ("stairs", "Stairs")
-    ]
     
     var body: some View {
         VStack(spacing: 12) {
@@ -77,11 +64,11 @@ struct TypeSelectionModal: View {
                         viewModel.selectType(type.0)
                     } label: {
                         VStack(spacing: 6) {
-                            Image(type.0)
+                            Image(type.id)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 24, height: 24)
-                            Text(type.1)
+                            Text(type.name)
                                 .font(.custom("FiraGO-Regular", size: 10))
                                 .foregroundColor(colorForType(type.0))
                                 .multilineTextAlignment(.center)

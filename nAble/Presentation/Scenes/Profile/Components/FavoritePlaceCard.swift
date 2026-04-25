@@ -2,6 +2,8 @@ import SwiftUI
 
 struct FavoritePlaceCard: View {
     let place: Place
+    let onDelete: () -> Void
+    @State private var showDeletion = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -40,5 +42,14 @@ struct FavoritePlaceCard: View {
         .padding(10)
         .background(Color("AppWhite"))
         .cornerRadius(8)
+        .onLongPressGesture {
+            showDeletion = true
+        }
+        .alert("Remove place", isPresented: $showDeletion) {
+            Button("Remove", role: .destructive) { onDelete() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Remove \(place.name) from favorites?")
+        }
     }
 }

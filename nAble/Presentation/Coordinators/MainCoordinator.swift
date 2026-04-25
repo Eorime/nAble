@@ -71,12 +71,17 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         
         //Profile
         let authRepository = FirebaseAuthRepository()
+        let userRepository = UserRepository()
         let profileVM = ProfileViewModel(
             profile: currentUser,
             fetchSavedPlacesUseCase: FetchSavedPlacesUseCase(),
             getLocationsUseCase: GetLocationsUseCase(repository: locationRepository),
             logoutUseCase: LogoutUseCase(authRepo: authRepository),
-            deleteAccountUseCase: DeleteAccountUseCase(authRepo: authRepository)
+            deleteAccountUseCase: DeleteAccountUseCase(authRepo: authRepository),
+            updateFullNameUseCase: UpdateFullNameUseCase(userRepository: userRepository),
+            updateUsernameUseCase: UpdateUsernameUseCase(userRepository: userRepository),
+            removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository),
+            removeSavedPlaceUseCase: RemoveSavedPlaceUseCase()
         )
         profileVM.coordinator = self.delegate as? AppCoordinator
         let profileVC = UIHostingController(rootView: ProfileView(vm: profileVM))

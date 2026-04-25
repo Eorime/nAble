@@ -2,11 +2,12 @@ import SwiftUI
 
 struct FavoritePlaces: View {
     let places: [Place]
+    let onDelete: (Place) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Favorite Places")
-                .font(.custom("FiraGO-SemiBold", size: 16))
+                .font(.custom("FiraGO-Medium", size: 14))
                 .foregroundColor(Color("AppBlack"))
                 .padding(.horizontal)
             
@@ -19,7 +20,8 @@ struct FavoritePlaces: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(places, id: \.id) { place in
-                            FavoritePlaceCard(place: place)
+                            FavoritePlaceCard(place: place, onDelete: { onDelete(place)
+                            })
                         }
                     }
                     .padding(.horizontal)

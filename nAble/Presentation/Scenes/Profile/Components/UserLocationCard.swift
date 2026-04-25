@@ -1,15 +1,9 @@
-//
-//  UserLocationCard.swift
-//  nAble
-//
-//  Created by Eorime on 25.04.26.
-//
-
-
 import SwiftUI
 
 struct UserLocationCard: View {
     let location: UserLocationModel
+    let onDelete: () -> Void
+    @State private var showDeleteAlert = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -37,7 +31,7 @@ struct UserLocationCard: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(location.locationId)
+                Text(LocationType.displayName(for: location.locationId))
                     .font(.custom("FiraGO-Medium", size: 14))
                     .foregroundColor(Color("AppBlack"))
                     .lineLimit(1)
@@ -56,5 +50,13 @@ struct UserLocationCard: View {
         .padding(10)
         .background(Color("AppWhite"))
         .cornerRadius(8)
+        .onLongPressGesture {
+            showDeleteAlert = true
+        } .alert("Delete this location?", isPresented: $showDeleteAlert) {
+            Button("Delete", role: .destructive) { onDelete() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to delete this location? (others won't be able to see it either)")
+        }
     }
 }

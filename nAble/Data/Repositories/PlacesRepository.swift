@@ -3,7 +3,7 @@ import FirebaseFirestore
 protocol PlacesRepositoryProtocol {
     func fetchNearbyPlaces(latitude: Double, longitude: Double, radius: Double) async throws -> [Place]
     func savePlace(userId: String, place: Place) async throws
-    func removeSavedPlace(userId: String, placeId: String) async throws
+    func removeSavedPlace(userId: String, placeId: String, @escaping (Result<Void, Error>) -> Void) async throws
     func fetchSavedPlaces(userId: String) async throws -> [Place]
 }
 

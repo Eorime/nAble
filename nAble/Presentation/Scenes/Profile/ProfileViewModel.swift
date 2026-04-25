@@ -7,8 +7,9 @@ class ProfileViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    var profile: User?
+    @Published var profile: User?
     var username: String { profile?.userName ?? "" }
+    var fullName: String { profile?.fullName ?? "" }
     var email: String { profile?.email ?? "" }
     var isLoggedIn: Bool { profile != nil }
     var coordinator: AppCoordinator?
@@ -17,20 +18,32 @@ class ProfileViewModel: ObservableObject {
     private let getLocationsUseCase: GetLocationsUseCaseProtocol
     private let logoutUseCase: LogoutUseCase
     private let deleteAccountUseCase: DeleteAccountUseCase
+    private let updateFullNameUseCase: UpdateFullNameUseCase
+    private let updateUsernameUseCase: UpdateUsernameUseCase
+    private let removeLocationUseCase: RemoveLocationUseCaseProtocol
+    private let removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
     
     init(
-           profile: User?,
-           fetchSavedPlacesUseCase: FetchSavedPlacesUseCase,
-           getLocationsUseCase: GetLocationsUseCaseProtocol,
-           logoutUseCase: LogoutUseCase,
-           deleteAccountUseCase: DeleteAccountUseCase
-       ) {
-           self.profile = profile
-           self.fetchFavoritePlaces = fetchSavedPlacesUseCase
-           self.getLocationsUseCase = getLocationsUseCase
-           self.logoutUseCase = logoutUseCase
-           self.deleteAccountUseCase = deleteAccountUseCase
-       }
+        profile: User?,
+        fetchSavedPlacesUseCase: FetchSavedPlacesUseCase,
+        getLocationsUseCase: GetLocationsUseCaseProtocol,
+        logoutUseCase: LogoutUseCase,
+        deleteAccountUseCase: DeleteAccountUseCase,
+        updateFullNameUseCase: UpdateFullNameUseCase,
+        updateUsernameUseCase: UpdateUsernameUseCase,
+        removeLocationUseCase: RemoveLocationUseCaseProtocol,
+        removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
+    ) {
+        self.profile = profile
+        self.fetchFavoritePlaces = fetchSavedPlacesUseCase
+        self.getLocationsUseCase = getLocationsUseCase
+        self.logoutUseCase = logoutUseCase
+        self.deleteAccountUseCase = deleteAccountUseCase
+        self.updateFullNameUseCase = updateFullNameUseCase
+        self.updateUsernameUseCase = updateUsernameUseCase
+        self.removeLocationUseCase = removeLocationUseCase
+        self.removeSavedPlaceUseCase = removeSavedPlaceUseCase
+    }
     
     @MainActor
     private func loadFavorites(userId: String) async {
@@ -79,6 +92,61 @@ class ProfileViewModel: ObservableObject {
             case .failure(let error):
                 DispatchQueue.main.async {
                     self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    func updateFullName(_ fullName: String) {
+        guard let userId = profile?.id else { return }
+        updateFullNameUseCase.execute(userId: userId, fullName: fullName) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.profile?.fullName = fullName
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    func updateUsername(_ username: String) {
+        guard let userId = profile?.id else { return }
+        updateUsernameUseCase.execute(userId: userId, username: username) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.profile?.userName = username
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    func deleteLocation(_ location: UserLocationModel) {
+        guard let userId = profile?.id else { return }
+        removeLocationUseCase.execute(userId: userId, locationId: location.id) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.addedLocations.removeAll { $0.id == location.id}
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+            
+        }
+    }
+    
+    func deleteFavoritePlace(_ place: Place) {
+        guard let userId = profile?.id else { return }
+        Task {
+            do {
+                try await removeSavedPlaceUseCase.execute(userId: userId, placeId: place.id)
+                await MainActor.run {
+                    self.favoritePlaces.removeAll { $0.id == place.id }
                 }
             }
         }

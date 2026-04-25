@@ -11,7 +11,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         FirebaseApp.configure()
         GMSPlacesClient.provideAPIKey(apiKey)
-        try? Auth.auth().signOut() //REMOVE roca dawer signouts
         
         return true
     }

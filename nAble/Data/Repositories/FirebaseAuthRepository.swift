@@ -1,7 +1,6 @@
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseCore
-//TODO: google sign in usecase da repo
 
 class FirebaseAuthRepository: AuthRepository {
     private let db = Firestore.firestore()
@@ -134,7 +133,7 @@ class FirebaseAuthRepository: AuthRepository {
             
             let user = User(id: userData["id"] as? String ?? userId,
                             fullName: userData["fullName"] as? String ?? "",
-                            userName: userData["userName"] as? String ?? "",
+                            userName: userData["username"] as? String ?? "",
                             email: userData["email"] as? String ?? "",
                             userLocations: userData["userLocations"] as? [UserLocationModel] ?? [],
                             imageUrl: userData["imageUrl"] as? String ?? "")
@@ -147,6 +146,5 @@ class FirebaseAuthRepository: AuthRepository {
 
 //TODO: places details sheet + open in maps
 //TODO: add google sign in
-//TODO: profile page favorited places horizontal scroll + page for your locations/remove
 //TODO: added location details (vin daamata, rodis, foto)
 //TODO: add picture field to user, optional

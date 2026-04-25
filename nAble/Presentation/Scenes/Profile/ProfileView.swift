@@ -7,28 +7,42 @@ struct ProfileView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 20) {
                 Text("Profile")
                     .foregroundColor(Color("AppBlack"))
-                    .font(.custom("FiraGO-SemiBold", size: 24))
+                    .font(.custom("FiraGO-Medium", size: 21))
                     .padding(.horizontal)
 
                 if vm.isLoggedIn {
-                    FavoritePlaces(places: vm.favoritePlaces)
+                    ProfileHeader(
+                        fullName: vm.fullName,
+                        username: vm.username,
+                        email: vm.email,
+                        onUpdateFullName: { vm.updateFullName($0) },
+                        onUpdateUsername: { vm.updateUsername($0) }
+                    )
+                    FavoritePlaces(places: vm.favoritePlaces, onDelete: { place in
+                        vm.deleteFavoritePlace(place)
+                    })
 
                     if !vm.addedLocations.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("My Locations")
-                                .font(.custom("FiraGO-SemiBold", size: 18))
+                                .font(.custom("FiraGO-Medium", size: 14))
                                 .foregroundColor(Color("AppBlack"))
                                 .padding(.horizontal)
 
+                            ScrollView {
                             LazyVStack(spacing: 10) {
                                 ForEach(vm.addedLocations) { location in
-                                    UserLocationCard(location: location)
+                                    UserLocationCard(location: location, onDelete: {
+                                           vm.deleteLocation(location)
+                                       })
                                         .padding(.horizontal)
+                                    }
                                 }
                             }
+                            .frame(height: 300)
                         }
                     }
 
