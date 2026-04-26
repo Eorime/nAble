@@ -167,8 +167,17 @@ class ProfileViewModel: ObservableObject {
                 try await removeSavedPlaceUseCase.execute(userId: userId, placeId: place.id)
                 await MainActor.run {
                     self.favoritePlaces.removeAll { $0.id == place.id }
+                    NotificationCenter.default.post(
+                        name: .didRemoveFavoritePlace,
+                        object: nil,
+                        userInfo: ["placeId": place.id]
+                    )
                 }
             }
         }
     }
+}
+
+extension Notification.Name {
+    static let didRemoveFavoritePlace = Notification.Name("didRemoveFavoritePlace")
 }

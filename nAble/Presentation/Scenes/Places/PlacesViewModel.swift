@@ -36,6 +36,15 @@ class PlacesViewModel: ObservableObject {
         self.removeSavedPlaceUseCase = removeSavedPlaceUseCase
         self.fetchSavedPlacesUseCase = fetchSavedPlacesUseCase
         self.userId = userId
+        NotificationCenter.default.addObserver(
+               forName: .didRemoveFavoritePlace,
+               object: nil,
+               queue: .main
+           ) { [weak self] notification in
+               if let placeId = notification.userInfo?["placeId"] as? String {
+                   self?.savedPlaces.removeAll { $0.id == placeId }
+               }
+           }
     }
     
     func startLocationMonitoring() {

@@ -91,5 +91,8 @@ struct PlaceCard: View {
                 .presentationBackground(Color("AppBG"))
                 .presentationDetents([.large])
         }
+        .onChange(of: initialIsSaved) { newValue in
+            isSaved = newValue
+        }
     }
 }
