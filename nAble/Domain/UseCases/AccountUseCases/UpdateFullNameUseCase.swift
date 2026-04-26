@@ -1,11 +1,3 @@
-//
-//  UpdateUsernameUseCase.swift
-//  nAble
-//
-//  Created by Eorime on 25.04.26.
-//
-
-
 class UpdateFullNameUseCase {
     private let userRepository: UserRepository
 

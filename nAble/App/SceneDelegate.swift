@@ -9,7 +9,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UINavigationBar.appearance().isHidden = true
         
         // es falsze shecvale
-        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
         let window = UIWindow(windowScene: scene)
         self.window = window
         

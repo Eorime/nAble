@@ -13,19 +13,12 @@ class AppCoordinator {
     }
     
     func start() {
-        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        
-        if hasSeenOnboarding {
-            checkAuthAndShowScreen()
-        } else {
-            showOnboarding()
-        }
+        checkAuthAndShowScreen()
     }
     
     private func checkAuthAndShowScreen() {
         if Auth.auth().currentUser != nil {
             showMainApp()
-            print("current user: \(Auth.auth().currentUser?.uid ?? "nil")")
         } else {
             showAuth()
         }
@@ -61,23 +54,10 @@ class AppCoordinator {
         self.authCoordinator = authCoordinator
     }
     
-    func showOnboarding() {
-        let onboardingVM = OnboardingVM()
-        let onboardingVC = OnboardingVC(viewmodel: onboardingVM)
-        onboardingVC.coordinator = self
-        window.rootViewController = onboardingVC
-        window.makeKeyAndVisible()
-    }
-    
     func createMainCoordinator(with user: User?) {
         let mainCoordinator = MainCoordinator(window: window, currentUser: user)
         mainCoordinator.delegate = self
         mainCoordinator.start()
         self.mainCoordinator = mainCoordinator
-    }
-    
-    func onboardingDidFinish() {
-        UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
-        checkAuthAndShowScreen()
     }
 }
