@@ -59,14 +59,18 @@ struct HomeView: View {
                         latitude: location.latitude,
                         longitude: location.longitude
                     )) {
-                        Image(location.locationId)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 32, height: 32)
-                            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
-                            .onTapGesture {
-                                selectedLocation = location
-                            }
+                        Button {
+                            selectedLocation = location
+                        } label: {
+                            Image(location.locationId)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32)
+                                .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
+                                .onTapGesture {
+                                    selectedLocation = location
+                                }
+                        }
                     }
                     .tag(location)
                 }

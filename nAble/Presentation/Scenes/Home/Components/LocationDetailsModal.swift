@@ -15,9 +15,9 @@ struct LocationDetailModal: View {
                         .fill(Color("AppGreen").opacity(0.2))
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: 160)
+                .frame(width: 280, height: 280)
                 .clipped()
-                .cornerRadius(10)
+                .cornerRadius(8)
             }
 
             HStack(spacing: 8) {
