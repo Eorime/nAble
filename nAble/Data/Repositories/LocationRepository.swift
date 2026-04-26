@@ -54,6 +54,60 @@ class LocationRepository: LocationRepositoryProtocol {
             }
     }
     
+    func updateUsernameInLocations(userId: String, newUsername: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        db.collection("users")
+            .document(userId)
+            .collection("locations")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    completion(.success(()))
+                    return
+                }
+                
+                let batch = self.db.batch()
+                documents.forEach { batch.updateData(["username": newUsername], forDocument: $0.reference) }
+                batch.commit { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            }
+    }
+    
+    func updateUserImageUrlInLocations(userId: String, newImageUrl: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        db.collection("users")
+            .document(userId)
+            .collection("locations")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    completion(.success(()))
+                    return
+                }
+                
+                let batch = self.db.batch()
+                documents.forEach { batch.updateData(["userImageUrl": newImageUrl], forDocument: $0.reference) }
+                batch.commit { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            }
+    }
+    
     func getLocations(userId: String, completion: @escaping (Result<[UserLocationModel], any Error>) -> Void) {
         db.collection("users")
             .document(userId)

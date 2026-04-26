@@ -4,7 +4,7 @@ enum LocationType {
             ("friendlyParking", "Friendly Parking"),
             ("friendlyWC", "Friendly WC"),
             ("mildElevation", "Mild Elevation"),
-            ("mildRoad", "Mild Road"),
+            ("mildRoad", "Bad Road"),
             ("railedStairs", "Railed Stairs"),
             ("roughElevation", "Rough Elevation"),
             ("roughRoad", "Rough Road"),

@@ -122,6 +122,7 @@ class ProfileViewModel: ObservableObject {
                 switch result {
                 case .success:
                     self?.profile?.userName = username
+                    LocationRepository().updateUsernameInLocations(userId: userId, newUsername: username) { _ in}
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
@@ -136,6 +137,7 @@ class ProfileViewModel: ObservableObject {
                 switch result {
                 case .success(let url):
                     self?.profile?.imageUrl = url
+                    LocationRepository().updateUserImageUrlInLocations(userId: userId, newImageUrl: url) { _ in }
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
