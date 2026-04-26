@@ -1,6 +1,7 @@
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseCore
+import GoogleSignIn
 
 class FirebaseAuthRepository: AuthRepository {
     private let db = Firestore.firestore()
@@ -27,6 +28,69 @@ class FirebaseAuthRepository: AuthRepository {
             completion(.success(()))
         } catch let error {
             completion(.failure(error))
+        }
+    }
+    
+    func signInWithGoogle(presentingViewController: UIViewController, completion: @escaping (Result<User, any Error>) -> Void) {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Missing client ID"])))
+            return
+        }
+        
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+            
+        GIDSignIn.sharedInstance.signIn(withPresenting: presentingViewController) { [weak self] result, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+                
+            guard let user = result?.user,
+                    let idToken = user.idToken?.tokenString else {
+                completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Missing Google credentials"])))
+                return
+            }
+            
+            let credential = GoogleAuthProvider.credential(
+                withIDToken: idToken,
+                accessToken: user.accessToken.tokenString
+            )
+                
+            Auth.auth().signIn(with: credential) { [weak self] authResult, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let firebaseUser = authResult?.user else {
+                    completion(.failure(NSError(domain: "AuthError", code: -1)))
+                    return
+                }
+                    
+                self?.db.collection("users").document(firebaseUser.uid).getDocument { snapshot, error in
+                    if let data = snapshot?.data(), !data.isEmpty {
+                        self?.fetchUser(userId: firebaseUser.uid, completion: completion)
+                    } else {
+                        let newUser = User(
+                            id: firebaseUser.uid,
+                            fullName: firebaseUser.displayName ?? "",
+                            userName: firebaseUser.email?.components(separatedBy: "@").first ?? "",
+                            email: firebaseUser.email ?? "",
+                            userLocations: [],
+                            imageUrl: firebaseUser.photoURL?.absoluteString ?? ""
+                        )
+                        self?.saveUser(user: newUser) { result in
+                            switch result {
+                            case .success:
+                                completion(.success(newUser))
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -183,5 +247,3 @@ class FirebaseAuthRepository: AuthRepository {
         }
     }
 }
-
-//TODO: add google sign in

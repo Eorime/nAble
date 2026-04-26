@@ -1,6 +1,6 @@
 import UIKit
 import FirebaseCore
-//googlesignin mere
+import GoogleSignIn
 import GooglePlaces
 import FirebaseAuth
 
@@ -23,7 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        //aq googlestvis GID
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+            return GIDSignIn.sharedInstance.handle(url)
     }
 
 }

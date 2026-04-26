@@ -32,6 +32,18 @@ class LogInViewController: UIViewController {
           return field
       }()
     
+    private let googleButton: CustomButton = {
+        let button = CustomButton(
+            title: "Try with Google",
+            backgroundColor: .clear,
+            cornerRadius: 8,
+            icon: UIImage(named: "googleIcon"),
+            textColor: UIColor(named: "AppRed")
+        )
+          
+        return button
+    }()
+    
     private let loginButton: CustomButton = {
         let button = CustomButton(
         title: "Log In",
@@ -74,6 +86,7 @@ class LogInViewController: UIViewController {
         view.addSubview(logoImageView)
         view.addSubview(emailField)
         view.addSubview(passwordField)
+        view.addSubview(googleButton)
         view.addSubview(loginButton)
         view.addSubview(skipButton)
         view.addSubview(bottomText)
@@ -96,6 +109,11 @@ class LogInViewController: UIViewController {
                 bottomText.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 10),
                 bottomText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
                 bottomText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+                
+                googleButton.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: -15),
+                googleButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+                googleButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+                googleButton.heightAnchor.constraint(equalToConstant: 50),
                 
                 loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80),
                 loginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
@@ -121,11 +139,17 @@ class LogInViewController: UIViewController {
     }
     
     func setupButtonActions() {
+        googleButton.addTarget(self, action: #selector(googleSignInTapped), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         skipButton.addTarget(self, action: #selector(skipTapped), for: .touchUpInside)
         bottomText.onSignUpTapped = {[weak self] in
             self?.coordinator?.showSignUp()
         }
+    }
+    
+    @objc private func googleSignInTapped() {
+        clearErrors()
+        viewModel.signInWithGoogle(presentingViewController: self)
     }
     
     @objc func loginTapped() {
