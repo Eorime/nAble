@@ -19,8 +19,8 @@ struct HomeView: View {
                         selectedLocation = nil
                     }
                    
-            LocationDetailModal(location: location)
-                .transition(.scale(scale: 0.95).combined(with: .opacity))
+                LocationDetailModal(location: location)
+                    .transition(.scale(scale: 0.95).combined(with: .opacity))
             }
         }
         .animation(.easeInOut(duration: 0.2), value: selectedLocation == nil)
@@ -53,23 +53,17 @@ struct HomeView: View {
     
     private var mapLayer: some View {
         MapReader { proxy in
-            Map(position: $viewModel.cameraPosition) {
+            Map(position: $viewModel.cameraPosition, selection: $selectedLocation) {  // ✅
                 ForEach(viewModel.locations) { location in
                     Annotation("", coordinate: CLLocationCoordinate2D(
                         latitude: location.latitude,
                         longitude: location.longitude
                     )) {
-                        Button {
-                            selectedLocation = location
-                        } label: {
-                            Image(location.locationId)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 32, height: 32)
-                                .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
-                        }
-                        .allowsHitTesting(true)
-                        .buttonStyle(.plain)
+                        Image(location.locationId)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 32, height: 32)
+                            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
                     }
                     .tag(location)
                 }
@@ -80,14 +74,10 @@ struct HomeView: View {
                 MapCompass()
                 MapScaleView()
             }
-            .simultaneousGesture(TapGesture().onEnded { _ in
-                //map won't steal taps inshallah
-            })
             .onTapGesture { screenCoordinate in
-                if viewModel.currentStep == .markLocation {
-                    if let coordinate = proxy.convert(screenCoordinate, from: .local) {
-                        viewModel.handleMapTap(at: coordinate)
-                    }
+                guard viewModel.currentStep == .markLocation else { return }
+                if let coordinate = proxy.convert(screenCoordinate, from: .local) {
+                    viewModel.handleMapTap(at: coordinate)
                 }
             }
         }
