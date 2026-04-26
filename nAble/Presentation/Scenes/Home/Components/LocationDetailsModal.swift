@@ -6,7 +6,7 @@ struct LocationDetailModal: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let imageURL = location.imageURL, let url = URL(string: imageURL) {
-                AsyncImage(url: url) { image in
+                CachedAsyncImage(url: url) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -35,7 +35,7 @@ struct LocationDetailModal: View {
                 if let userImageUrl = location.userImageUrl,
                       !userImageUrl.isEmpty,
                       let url = URL(string: userImageUrl) {
-                       AsyncImage(url: url) { image in
+                       CachedAsyncImage(url: url) { image in
                            image.resizable().aspectRatio(contentMode: .fill)
                        } placeholder: {
                            Circle().fill(Color("AppGreen").opacity(0.2))

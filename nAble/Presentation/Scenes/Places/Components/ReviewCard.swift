@@ -7,7 +7,7 @@ struct ReviewCard: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
                 if let photoUrl = review.authorPhotoUrl, let url = URL(string: photoUrl) {
-                    AsyncImage(url: url) { image in
+                    CachedAsyncImage(url: url) { image in
                         image.resizable().aspectRatio(contentMode: .fill)
                     } placeholder: {
                         Circle().fill(Color("AppGreen").opacity(0.2))

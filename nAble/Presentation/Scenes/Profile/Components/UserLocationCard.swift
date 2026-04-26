@@ -8,7 +8,7 @@ struct UserLocationCard: View {
     var body: some View {
         HStack(spacing: 12) {
             if let imageURL = location.imageURL, let url = URL(string: imageURL) {
-                AsyncImage(url: url) { image in
+                CachedAsyncImage(url: url) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)

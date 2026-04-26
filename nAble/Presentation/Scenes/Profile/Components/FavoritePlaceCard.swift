@@ -7,7 +7,7 @@ struct FavoritePlaceCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            AsyncImage(url: PlacesService.shared.getPhotoURL(photoName: place.photos.first?.reference ?? "")) { image in
+            CachedAsyncImage(url: PlacesService.shared.getPhotoURL(photoName: place.photos.first?.reference ?? "")) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)

@@ -21,7 +21,7 @@ struct ProfileHeader: View {
                 showImagePicker = true
             } label: {
                 if !avatarUrl.isEmpty, let url = URL(string: avatarUrl) {
-                    AsyncImage(url: url) { image in
+                    CachedAsyncImage(url: url) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
