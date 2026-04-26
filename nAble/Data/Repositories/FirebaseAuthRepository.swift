@@ -184,5 +184,4 @@ class FirebaseAuthRepository: AuthRepository {
     }
 }
 
-//TODO: places details sheet + open in maps
 //TODO: add google sign in

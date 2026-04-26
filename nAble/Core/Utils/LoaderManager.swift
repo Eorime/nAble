@@ -6,10 +6,12 @@ class LoaderManager {
     private var loaderView: UIView?
     private var loaderWindow: UIWindow?
     private var imageView: UIImageView?
+    private var loadingCount = 0
     
     private init() {}
     
     func show() {
+        loadingCount += 1
         guard loaderView == nil else {
             return
         }
@@ -54,6 +56,18 @@ class LoaderManager {
     }
     
     func hide() {
+        loadingCount = max(0, loadingCount - 1)
+        guard loadingCount == 0 else { return } 
+        imageView?.layer.removeAllAnimations()
+        loaderView?.removeFromSuperview()
+        loaderWindow?.isHidden = true
+        loaderWindow = nil
+        loaderView = nil
+        imageView = nil
+    }
+    
+    func reset() {
+        loadingCount = 0
         imageView?.layer.removeAllAnimations()
         loaderView?.removeFromSuperview()
         loaderWindow?.isHidden = true

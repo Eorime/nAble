@@ -8,7 +8,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         UINavigationBar.appearance().isHidden = true
         
-        // es falsze shecvale
         let window = UIWindow(windowScene: scene)
         self.window = window
         

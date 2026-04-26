@@ -8,6 +8,8 @@ class PlacesViewModel: ObservableObject {
     @Published var savedPlaces: [Place] = []
     @Published var isLoading: Bool = false
     @Published var error: Error?
+    private var hasLoadedInitially = false
+    private var lastLoadedCoordinate: CLLocationCoordinate2D?
     
     private let locationService: LocationServiceProtocol
     private let fetchNearbyPlaces: FetchNearbyPlacesUseCase
@@ -38,8 +40,17 @@ class PlacesViewModel: ObservableObject {
     
     func startLocationMonitoring() {
         locationService.startMonitoringLocation { [weak self] coordinate in
+            guard let self = self else { return }
+            
+            if let last = self.lastLoadedCoordinate {
+                let lastLocation = CLLocation(latitude: last.latitude, longitude: last.longitude)
+                let newLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+                guard newLocation.distance(from: lastLocation) > 500 else { return }  
+            }
+            
             DispatchQueue.main.async {
-                self?.loadNearbyPlaces(coordinate: coordinate)
+                self.lastLoadedCoordinate = coordinate
+                self.loadNearbyPlaces(coordinate: coordinate)
             }
         }
     }
@@ -61,7 +72,6 @@ class PlacesViewModel: ObservableObject {
                     self.isLoading = false
                 }
             } catch {
-                print("Places error: \(error)")
                 await MainActor.run {
                     self.error = error
                     self.isLoading = false
@@ -71,11 +81,13 @@ class PlacesViewModel: ObservableObject {
     }
     
     func loadInitialPlaces() {
-        guard !userId.isEmpty else { return }
+        guard !hasLoadedInitially else { return }
+        hasLoadedInitially = true
         locationService.getCurrentLocation { [weak self] result in
             switch result {
             case .success(let coordinate):
                 DispatchQueue.main.async {
+                    self?.lastLoadedCoordinate = coordinate
                     self?.loadNearbyPlaces(coordinate: coordinate)
                     self?.loadSavedPlaces()
                 }

@@ -29,6 +29,7 @@ struct PlacesView: View {
         }
         .onDisappear {
             viewModel.stopLocationMonitoring()
+            LoaderManager.shared.reset() 
         }
         .onChange(of: viewModel.isLoading) { isLoading in
             if isLoading {

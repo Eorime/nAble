@@ -96,7 +96,7 @@ struct TypeSelectionModal: View {
     }
     
     private var headerColor: Color {
-        selectedCategory == .problem ? Color("AppRed") : Color("AppGreen")
+        selectedCategory == .problem ? Color("AppOrange") : Color("AppGreen")
     }
     
     private func colorForType(_ typeId: String) -> Color {
