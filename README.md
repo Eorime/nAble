@@ -23,17 +23,17 @@ n'Able is an iOS application created to make cities more navigable for people wi
 ## Screenshots
 
 <p>
-  <img src="./screenshots/1.png" width="120" />
-  <img src="./screenshots/2.png" width="120" />
-  <img src="./screenshots/3.png" width="120" />
-  <img src="./screenshots/4.png" width="120" />
+  <img src="./screenshots/1.png" width="160" />
+  <img src="./screenshots/2.png" width="160" />
+  <img src="./screenshots/3.png" width="160" />
+  <img src="./screenshots/4.png" width="160" />
 </p>
 
 <p>
-  <img src="./screenshots/5.png" width="120" />
-  <img src="./screenshots/6.png" width="120" />
-  <img src="./screenshots/7.png" width="120" />
-  <img src="./screenshots/8.png" width="120" />
+  <img src="./screenshots/5.png" width="160" />
+  <img src="./screenshots/6.png" width="160" />
+  <img src="./screenshots/7.png" width="160" />
+  <img src="./screenshots/8.png" width="160" />
 </p>
 
 ## Technologies Used
