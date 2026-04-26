@@ -172,7 +172,8 @@ class HomeViewModel: ObservableObject {
                 userId: userId,
                 username: username,
                 timeStamp: Date(),
-                imageURL: imageURL
+                imageURL: imageURL,
+                userImageUrl: profile?.imageUrl
             )
 
             addLocationUseCase.execute(userId: userId, location: newLocation) { [weak self] result in

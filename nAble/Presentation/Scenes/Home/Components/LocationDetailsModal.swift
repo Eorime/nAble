@@ -32,8 +32,21 @@ struct LocationDetailModal: View {
             }
 
             HStack(spacing: 6) {
-                Image(systemName: "person.circle")
-                    .foregroundColor(Color("AppGreen"))
+                if let userImageUrl = location.userImageUrl,
+                      !userImageUrl.isEmpty,
+                      let url = URL(string: userImageUrl) {
+                       AsyncImage(url: url) { image in
+                           image.resizable().aspectRatio(contentMode: .fill)
+                       } placeholder: {
+                           Circle().fill(Color("AppGreen").opacity(0.2))
+                       }
+                       .frame(width: 28, height: 28)
+                       .clipShape(Circle())
+                   } else {
+                       Image(systemName: "person.circle")
+                           .foregroundColor(Color("AppGreen"))
+                           .font(.system(size: 28))
+                   }
                 Text(location.username)
                     .font(.custom("FiraGO-Regular", size: 14))
                     .foregroundColor(Color("AppBlack"))

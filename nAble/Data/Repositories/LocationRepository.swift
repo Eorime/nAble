@@ -25,6 +25,10 @@ class LocationRepository: LocationRepositoryProtocol {
         if let imageURL = location.imageURL {
             locationData["imageURL"] = imageURL
         }
+        
+        if let userImageUrl = location.userImageUrl {
+            locationData["userImageUrl"] = userImageUrl
+        }
 
         db.collection("users")
             .document(userId)
@@ -83,7 +87,8 @@ class LocationRepository: LocationRepositoryProtocol {
                         userId: userId,
                         username: username,
                         timeStamp: timestamp.dateValue(),
-                        imageURL: data["imageURL"] as? String
+                        imageURL: data["imageURL"] as? String,
+                        userImageUrl: data["userImageUrl"] as? String
                     )
                 }
                 completion(.success(locations))
@@ -123,7 +128,8 @@ class LocationRepository: LocationRepositoryProtocol {
                         userId: userId,
                         username: username,
                         timeStamp: timestamp.dateValue(),
-                        imageURL: data["imageURL"] as? String
+                        imageURL: data["imageURL"] as? String,
+                        userImageUrl: data["userImageUrl"] as? String 
                     )
                 }
                 completion(.success(locations))
