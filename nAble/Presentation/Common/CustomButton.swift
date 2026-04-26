@@ -31,19 +31,20 @@ class CustomButton: UIButton {
         config.attributedTitle = titleAttr
         
         if let icon = icon {
-            config.image = icon
-            config.imagePlacement = .leading
-            config.imagePadding = 8
+            config.image = icon.withRenderingMode(.alwaysOriginal)
+            config.imagePlacement = .trailing
+            config.imagePadding = 14
         }
         
         self.configuration = config
+        self.tintColor = backgroundColor ?? UIColor(named: "AppGreen")
         self.layer.cornerRadius = cornerRadius
         self.clipsToBounds = true
         self.translatesAutoresizingMaskIntoConstraints = false
         
         if hasOutline {
             layer.borderWidth = 1.5
-            layer.borderColor = (outlineColor ?? UIColor(named: "AppRed"))?.cgColor
+            layer.borderColor = (outlineColor ?? UIColor(named: "AppGray"))?.cgColor
         }
         
         if hasOutline {

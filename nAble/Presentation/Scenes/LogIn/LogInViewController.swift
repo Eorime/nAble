@@ -34,13 +34,13 @@ class LogInViewController: UIViewController {
     
     private let googleButton: CustomButton = {
         let button = CustomButton(
-            title: "Try with Google",
-            backgroundColor: .clear,
+            title: "Continue with Google",
+            backgroundColor: UIColor(named: "AppBG"),
             cornerRadius: 8,
             icon: UIImage(named: "googleIcon"),
-            textColor: UIColor(named: "AppRed")
+            hasOutline: true,
+            textColor: UIColor(named: "AppBlack")
         )
-          
         return button
     }()
     
@@ -149,7 +149,7 @@ class LogInViewController: UIViewController {
     
     @objc private func googleSignInTapped() {
         clearErrors()
-        viewModel.signInWithGoogle(presentingViewController: self)
+        viewmodel.signInWithGoogle(presentingViewController: self)
     }
     
     @objc func loginTapped() {

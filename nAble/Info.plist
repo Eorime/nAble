@@ -2,10 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>We need camera access to take photos of locations</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>nAble uses your location to find accessible places nearby</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.297783433318-f6bt4e42sqp1ltr46kdc6bhqh41u8pnp</string>
+			</array>
+		</dict>
+	</array>
 	<key>GooglePlacesAPIKey</key>
 	<string>AIzaSyDcSZdQL53TTUh_HB1Jzwn7NFjzPeF2PgQ</string>
 	<key>UIAppFonts</key>
