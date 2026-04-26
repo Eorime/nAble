@@ -6,6 +6,7 @@ struct PlaceCard: View {
     let initialIsSaved: Bool
     let isLoggedIn: Bool
     @State private var isSaved: Bool
+    @State private var showDetail = false
 
     init(place: Place, initialIsSaved: Bool = false, isLoggedIn: Bool = false, onSave: @escaping (Place) -> Void) {
         self.place = place
@@ -82,5 +83,13 @@ struct PlaceCard: View {
         }
         .background(Color("AppWhite"))
         .cornerRadius(8)
+        .onTapGesture {
+            showDetail = true
+        }
+        .sheet(isPresented: $showDetail) {
+            PlaceDetailView(place: place)
+                .presentationBackground(Color("AppBG"))
+                .presentationDetents([.large])
+        }
     }
 }
