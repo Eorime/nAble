@@ -18,20 +18,26 @@ struct ProfileView: View {
                         fullName: vm.fullName,
                         username: vm.username,
                         email: vm.email,
+                        avatarUrl: vm.userAvatar,
                         onUpdateFullName: { vm.updateFullName($0) },
-                        onUpdateUsername: { vm.updateUsername($0) }
+                        onUpdateUsername: { vm.updateUsername($0) },
+                        onUpdateAvatar: { vm.updateAvatar($0) }
                     )
                     FavoritePlaces(places: vm.favoritePlaces, onDelete: { place in
                         vm.deleteFavoritePlace(place)
                     })
 
-                    if !vm.addedLocations.isEmpty {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("My Locations")
-                                .font(.custom("FiraGO-Medium", size: 14))
-                                .foregroundColor(Color("AppBlack"))
-                                .padding(.horizontal)
-
+                    VStack(alignment: .leading, spacing: 12) {
+                    Text("My Locations")
+                        .font(.custom("FiraGO-Medium", size: 14))
+                        .foregroundColor(Color("AppBlack"))
+                        .padding(.horizontal)
+                    if vm.addedLocations.isEmpty {
+                        Text("No added locations yet")
+                            .font(.custom("FiraGO-Regular", size: 13))
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal)
+                    } else {
                             ScrollView {
                             LazyVStack(spacing: 10) {
                                 ForEach(vm.addedLocations) { location in
@@ -42,7 +48,7 @@ struct ProfileView: View {
                                     }
                                 }
                             }
-                            .frame(height: 300)
+                            .frame(maxHeight: 300)
                         }
                     }
 

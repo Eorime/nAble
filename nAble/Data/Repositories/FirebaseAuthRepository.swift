@@ -82,19 +82,59 @@ class FirebaseAuthRepository: AuthRepository {
         }
     }
     
-    func finalizeDeletion(userId: String, completion: @escaping (Result <Void, Error>) -> Void) {
-        db.collection("users").document(userId).delete { error in
+    func finalizeDeletion(userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let userRef = db.collection("users").document(userId)
+        let group = DispatchGroup()
+        var deletionError: Error?
+
+        group.enter()
+        userRef.collection("locations").getDocuments { snapshot, error in
             if let error = error {
+                deletionError = error
+                group.leave()
+                return
+            }
+            let batch = self.db.batch()
+            snapshot?.documents.forEach { batch.deleteDocument($0.reference) }
+            batch.commit { error in
+                if let error = error { deletionError = error }
+                group.leave()
+            }
+        }
+
+        group.enter()
+        userRef.collection("savedPlaces").getDocuments { snapshot, error in
+            if let error = error {
+                deletionError = error
+                group.leave()
+                return
+            }
+            let batch = self.db.batch()
+            snapshot?.documents.forEach { batch.deleteDocument($0.reference) }
+            batch.commit { error in
+                if let error = error { deletionError = error }
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            if let error = deletionError {
                 completion(.failure(error))
                 return
             }
-            
-            Auth.auth().currentUser?.delete { error in
+
+            userRef.delete { error in
                 if let error = error {
                     completion(.failure(error))
                     return
-                } else {
-                    completion(.success(()))
+                }
+
+                Auth.auth().currentUser?.delete { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
                 }
             }
         }

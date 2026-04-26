@@ -34,7 +34,7 @@ struct TypeSelectionModal: View {
                 categoryButton(title: "Accessibility", color: Color("AppGreen")) {
                     selectedCategory = .accessibility
                 }
-                categoryButton(title: "Problem", color: Color.orange) {
+                categoryButton(title: "Problem", color: Color("AppOrange")) {
                     selectedCategory = .problem
                 }
             }
@@ -86,7 +86,7 @@ struct TypeSelectionModal: View {
     private func categoryButton(title: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.custom("FiraGO-SemiBold", size: 13))
+                .font(.custom("FiraGO-Medium", size: 13))
                 .foregroundColor(color)
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
@@ -96,7 +96,7 @@ struct TypeSelectionModal: View {
     }
     
     private var headerColor: Color {
-        selectedCategory == .problem ? Color.orange : Color("AppGreen")
+        selectedCategory == .problem ? Color("AppRed") : Color("AppGreen")
     }
     
     private func colorForType(_ typeId: String) -> Color {
@@ -104,7 +104,7 @@ struct TypeSelectionModal: View {
         case "roughRoad", "roughElevation", "stairs":
             return Color("AppRed")
         case "mildElevation", "mildRoad", "railedStairs":
-            return Color.orange
+            return Color("AppOrange")
         default:
             return Color("AppGreen")
         }

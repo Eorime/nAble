@@ -11,6 +11,7 @@ class ProfileViewModel: ObservableObject {
     var username: String { profile?.userName ?? "" }
     var fullName: String { profile?.fullName ?? "" }
     var email: String { profile?.email ?? "" }
+    var userAvatar: String { profile?.imageUrl ?? ""}
     var isLoggedIn: Bool { profile != nil }
     var coordinator: AppCoordinator?
     
@@ -22,6 +23,7 @@ class ProfileViewModel: ObservableObject {
     private let updateUsernameUseCase: UpdateUsernameUseCase
     private let removeLocationUseCase: RemoveLocationUseCaseProtocol
     private let removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
+    private let updateAvatarUseCase: UpdateAvatarUseCase
     
     init(
         profile: User?,
@@ -32,7 +34,8 @@ class ProfileViewModel: ObservableObject {
         updateFullNameUseCase: UpdateFullNameUseCase,
         updateUsernameUseCase: UpdateUsernameUseCase,
         removeLocationUseCase: RemoveLocationUseCaseProtocol,
-        removeSavedPlaceUseCase: RemoveSavedPlaceUseCase
+        removeSavedPlaceUseCase: RemoveSavedPlaceUseCase,
+        updateAvatarUseCase: UpdateAvatarUseCase
     ) {
         self.profile = profile
         self.fetchFavoritePlaces = fetchSavedPlacesUseCase
@@ -43,6 +46,7 @@ class ProfileViewModel: ObservableObject {
         self.updateUsernameUseCase = updateUsernameUseCase
         self.removeLocationUseCase = removeLocationUseCase
         self.removeSavedPlaceUseCase = removeSavedPlaceUseCase
+        self.updateAvatarUseCase = updateAvatarUseCase
     }
     
     @MainActor
@@ -118,6 +122,20 @@ class ProfileViewModel: ObservableObject {
                 switch result {
                 case .success:
                     self?.profile?.userName = username
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    func updateAvatar(_ image: UIImage) {
+        guard let userId = profile?.id else { return }
+        updateAvatarUseCase.execute(userId: userId, image: image) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let url):
+                    self?.profile?.imageUrl = url
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
