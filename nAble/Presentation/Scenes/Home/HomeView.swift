@@ -68,6 +68,8 @@ struct HomeView: View {
                                 .frame(width: 32, height: 32)
                                 .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
                         }
+                        .allowsHitTesting(true)
+                        .buttonStyle(.plain)
                     }
                     .tag(location)
                 }
@@ -78,6 +80,9 @@ struct HomeView: View {
                 MapCompass()
                 MapScaleView()
             }
+            .simultaneousGesture(TapGesture().onEnded { _ in
+                //map won't steal taps inshallah
+            })
             .onTapGesture { screenCoordinate in
                 if viewModel.currentStep == .markLocation {
                     if let coordinate = proxy.convert(screenCoordinate, from: .local) {
