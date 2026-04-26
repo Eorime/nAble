@@ -19,15 +19,14 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
     private let window: UIWindow
     private var tabBarController: UITabBarController?
     private let currentUser: User?
-    
-    private let locationService = LocationService()
-    private var placesViewModel: PlacesViewModel?
+    private let di: AppDIContainer
     
     weak var delegate: MainCoordinatorDelegate?
     
-    init(window: UIWindow, currentUser: User?) {
+    init(window: UIWindow, currentUser: User?, di: AppDIContainer = AppDIContainer()) {
         self.window = window
         self.currentUser = currentUser
+        self.di = di
     }
     
     func start() {
@@ -48,41 +47,36 @@ class MainCoordinator: NSObject, UINavigationControllerDelegate {
         tabBar.tabBar.standardAppearance = appearance
         tabBar.tabBar.scrollEdgeAppearance = appearance
         
-        let locationRepository = LocationRepository()
-        
-        //Places
-        let placesVM = PlacesViewModel(userId: currentUser?.id ?? "", locationService: locationService)
-        self.placesViewModel = placesVM
+        let placesVM = PlacesViewModel(
+            userId: currentUser?.id ?? "",
+            locationService: di.locationService
+        )
         let placesVC = UIHostingController(rootView: PlacesView(viewModel: placesVM))
         placesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "location", withConfiguration: symbolConfig), tag: 0)
         
-        //Home
         let homeVM = HomeViewModel(
-            getCurrentLocation: GetCurrentLocationUseCase(locationService: locationService),
-            locationService: locationService,
-            addLocationUseCase: AddLocationUseCase(repository: locationRepository),
-            getAllLocationsUseCase: GetAllLocationsUseCase(repository: locationRepository),
-            removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository),
-            imageRepository: ImageRepository()
+            getCurrentLocation: di.getCurrentLocationUseCase,
+            locationService: di.locationService,
+            addLocationUseCase: di.addLocationUseCase,
+            getAllLocationsUseCase: di.getAllLocationsUseCase,
+            removeLocationUseCase: di.removeLocationUseCase,
+            imageRepository: di.imageRepository
         )
         homeVM.profile = currentUser
         let homeVC = UIHostingController(rootView: HomeView(viewModel: homeVM))
         homeVC.tabBarItem = UITabBarItem(title: "", image: UIImage(systemName: "map", withConfiguration: symbolConfig), tag: 1)
         
-        //Profile
-        let authRepository = FirebaseAuthRepository()
-        let userRepository = UserRepository()
         let profileVM = ProfileViewModel(
             profile: currentUser,
-            fetchSavedPlacesUseCase: FetchSavedPlacesUseCase(),
-            getLocationsUseCase: GetLocationsUseCase(repository: locationRepository),
-            logoutUseCase: LogoutUseCase(authRepo: authRepository),
-            deleteAccountUseCase: DeleteAccountUseCase(authRepo: authRepository),
-            updateFullNameUseCase: UpdateFullNameUseCase(userRepository: userRepository),
-            updateUsernameUseCase: UpdateUsernameUseCase(userRepository: userRepository),
-            removeLocationUseCase: RemoveLocationUseCase(repository: locationRepository),
-            removeSavedPlaceUseCase: RemoveSavedPlaceUseCase(),
-            updateAvatarUseCase: UpdateAvatarUseCase(imageRepository: ImageRepository(), userRepository: userRepository)
+            fetchSavedPlacesUseCase: di.fetchSavedPlacesUseCase,
+            getLocationsUseCase: di.getLocationsUseCase,
+            logoutUseCase: di.logoutUseCase,
+            deleteAccountUseCase: di.deleteAccountUseCase,
+            updateFullNameUseCase: di.updateFullNameUseCase,
+            updateUsernameUseCase: di.updateUsernameUseCase,
+            removeLocationUseCase: di.removeLocationUseCase,
+            removeSavedPlaceUseCase: di.removeSavedPlaceUseCase,
+            updateAvatarUseCase: di.updateAvatarUseCase
         )
         profileVM.coordinator = self.delegate as? AppCoordinator
         let profileVC = UIHostingController(rootView: ProfileView(vm: profileVM))

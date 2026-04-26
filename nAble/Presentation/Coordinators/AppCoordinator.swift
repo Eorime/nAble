@@ -55,7 +55,8 @@ class AppCoordinator {
     }
     
     func createMainCoordinator(with user: User?) {
-        let mainCoordinator = MainCoordinator(window: window, currentUser: user)
+        let di = AppDIContainer()
+        let mainCoordinator = MainCoordinator(window: window, currentUser: user, di: di)
         mainCoordinator.delegate = self
         mainCoordinator.start()
         self.mainCoordinator = mainCoordinator
