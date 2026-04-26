@@ -45,6 +45,8 @@ struct ProfileHeader: View {
                     }
                     showImagePicker = false
                 }
+                .presentationBackground(Color("AppBG"))
+                .presentationDetents([.medium])
             }
 
             VStack(alignment: .leading, spacing: 4) {

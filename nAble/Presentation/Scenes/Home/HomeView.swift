@@ -12,7 +12,18 @@ struct HomeView: View {
             addLocationOverlay
             locationControls
             addButton
+            if let location = selectedLocation {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        selectedLocation = nil
+                    }
+                   
+            LocationDetailModal(location: location)
+                .transition(.scale(scale: 0.95).combined(with: .opacity))
+            }
         }
+        .animation(.easeInOut(duration: 0.2), value: selectedLocation == nil)
         .navigationBarHidden(true)
         .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
             Button("OK") {
@@ -52,7 +63,10 @@ struct HomeView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 32, height: 32)
-                            .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
+                            .onTapGesture {
+                                selectedLocation = location
+                            }
                     }
                     .tag(location)
                 }
